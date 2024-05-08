@@ -1,9 +1,17 @@
-import React from 'react'
+import React, { useEffect } from "react";
+import { getQuizzes } from "../utils/firebase.utils";
 
 function Home() {
-  return (
-    <div>Home</div>
-  )
+  useEffect(() => {
+    const loadQuizzes = async () => {
+      const data = await getQuizzes();
+      console.log(data);
+    };
+
+    loadQuizzes();
+  }, []);
+
+  return <div>Home</div>;
 }
 
-export default Home
+export default Home;

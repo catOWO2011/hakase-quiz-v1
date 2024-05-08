@@ -1,8 +1,19 @@
-import { Button, Modal } from "antd";
+import { HomeFilled } from "@ant-design/icons";
+import { Button, Form, Input, Menu, Modal } from "antd";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const onMenuClick = (e) => {
+    const { key } = e;
+    if (key == "new-quiz") {
+      showModal();
+    }
+  };
+
+  const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -12,33 +23,42 @@ const Header = () => {
     setIsModalOpen(false);
   };
 
+  const handleSubmitNewQuiz = () => {
+    console.log("Submit");
+    navigate("/create-quiz");
+  };
+
   return (
-    <div className="fixed z-50 w-screen bg-slate-300 p-6 px-16">
-      <div className="hidden md:flex w-full h-full items-stretch">
-        <div className="flex items-center gap-2">
-          LOGO
-          {/* <img src={Logo} className='w-10 object-cover' alt='logo'/> */}
-          <p className="text-fuchsia-400 text-xl font-bold">Hakase Quiz</p>
-        </div>
-        <div className="grow justify-end">
-          <Button className="float-right" onClick={showModal}>
-            Create a new quiz
-          </Button>
-          <Modal
-            open={isModalOpen}
-            onCancel={handleCancel}
-            footer={[
-              <Button
-                key="submit"
-                type="primary"
-              >
-                Submit
-              </Button>
-            ]}
-          ></Modal>
-        </div>
-      </div>
-      <div className="flex md:hidden w-full h-full"></div>
+    <div className="h-[60px]">
+      <Modal
+        open={isModalOpen}
+        onCancel={handleCancel}
+        footer={[
+          <Button key="submit" type="primary" onClick={handleSubmitNewQuiz}>
+            Submit
+          </Button>,
+        ]}
+      >
+        <Form form={form}>
+          <Form.Item label="Quiz Name">
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Menu
+        mode="horizontal"
+        onClick={onMenuClick}
+        items={[
+          {
+            label: <HomeFilled />,
+            key: "home",
+          },
+          {
+            label: "Create a new quiz",
+            key: "new-quiz",
+          },
+        ]}
+      />
     </div>
   );
 };
