@@ -13,7 +13,7 @@ const router = createBrowserRouter([
     element: <App/>,
     children: [
       { index: true, element: <Home /> },
-      { path: 'create-quiz', element: <QuizCreatorPage /> }
+      { path: 'edit-quizz/:id', element: <QuizCreatorPage /> }
     ]
   }
 ]);

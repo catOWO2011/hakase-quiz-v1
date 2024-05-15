@@ -2,6 +2,7 @@ import { HomeFilled } from "@ant-design/icons";
 import { Button, Form, Input, Menu, Modal } from "antd";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { createQuizz } from "../utils/firebase.utils";
 
 const Header = () => {
   const onMenuClick = (e) => {
@@ -23,28 +24,36 @@ const Header = () => {
     setIsModalOpen(false);
   };
 
-  const handleSubmitNewQuiz = () => {
-    console.log("Submit");
-    navigate("/create-quiz");
+  const handleSubmitNewQuiz = async () => {
+    const newQuizzProperties = form.getFieldsValue();
+
+    const { id: quizId } = await createQuizz(newQuizzProperties);
+
+    setIsModalOpen(false);
+    form.resetFields();
+    navigate(`/edit-quizz/${quizId}`);
   };
 
   return (
     <div className="h-[60px]">
-      <Modal
-        open={isModalOpen}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="submit" type="primary" onClick={handleSubmitNewQuiz}>
-            Submit
-          </Button>,
-        ]}
-      >
-        <Form form={form}>
-          <Form.Item label="Quiz Name">
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
+      {
+        isModalOpen && 
+        <Modal
+          open={isModalOpen}
+          onCancel={handleCancel}
+          footer={[
+            <Button key="submit" type="primary" onClick={handleSubmitNewQuiz}>
+              Submit
+            </Button>,
+          ]}
+        >
+          <Form form={form}>
+            <Form.Item label="Quiz Name" name="title">
+              <Input />
+            </Form.Item>
+          </Form>
+        </Modal>
+      }
       <Menu
         mode="horizontal"
         onClick={onMenuClick}

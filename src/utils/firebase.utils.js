@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { collection, doc, getDocs, getFirestore } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_APP_FIREBASE_API_KEY,
@@ -29,6 +29,27 @@ const getAllDocuments = async (docName) => {
   return docs;
 };
 
+const createNewDoc = async (collectionName, newDocProperties) => {
+  return await addDoc(
+    collection(db, collectionName),
+    {
+      ...newDocProperties
+    }
+  );
+};
+
 export const getQuizzes = async () => {
   return await getAllDocuments('quizzes');
+};
+
+export const createQuizz = async (newQuizzProperties) => {
+  let newQuiz = {}
+  try {
+    newQuiz = await createNewDoc('quizzes', newQuizzProperties);
+  } catch (error) {
+    newQuiz = {
+      error
+    };
+  }
+  return newQuiz;
 };
