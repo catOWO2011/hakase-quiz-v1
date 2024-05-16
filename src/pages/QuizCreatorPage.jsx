@@ -63,13 +63,16 @@ function QuizCreatorPage() {
           modalContent
         }
       </Modal>}
-      <div>
-        <Button
-          className=''
-          onClick={handleAddQuestion(FILL_IN_THE_BLANKS)}
-        >
-          Fill in the blank
-        </Button>
+      <div className='flex flex-col'>
+        <h2>Add question:</h2>
+        <div>
+          <Button
+            className=''
+            onClick={handleAddQuestion(FILL_IN_THE_BLANKS)}
+          >
+            Fill in the blank
+          </Button>
+        </div>
       </div>
       <div>
 
