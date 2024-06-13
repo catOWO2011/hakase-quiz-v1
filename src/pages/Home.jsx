@@ -3,9 +3,11 @@ import { getQuizzes } from "../utils/firebase.utils";
 import Title from "antd/es/typography/Title";
 import { Button } from "antd";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
   const [quizzes, setQuizzes] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadQuizzes = async () => {
@@ -17,14 +19,19 @@ function Home() {
     loadQuizzes();
   }, []);
 
+  const handleClickHomeIcon = (quizId) => {
+    return () => navigate(`/edit-quizz/${quizId}`);
+  };
+
   return (
-    <div className="w-full">
+    <div className="w-full text-center">
       <Title>Quizzes</Title>
-      <div className="grid grid-cols-[repeat(auto-fit,_15rem)] gap-6">
+      <div className="grid grid-cols-[repeat(auto-fit,_15rem)] gap-6 justify-between">
         {
           quizzes.map(({ id, title }) =>
             <article 
               className="
+                cursor-pointer
                 flex
                 flex-col
                 rounded-[8px]
@@ -36,14 +43,14 @@ function Home() {
                 <div className="flex items-center">
                   <h3>{title}</h3>
                 </div>
-                <div>
+                <div className="p-5 flex justify-between gap-2">
                   <Button
                     icon={<EditTwoTone />}
+                    onClick={handleClickHomeIcon(id)}
                   />
                   <Button
                     icon={<DeleteTwoTone />}
                   >
-
                   </Button>
                 </div>
               </div>

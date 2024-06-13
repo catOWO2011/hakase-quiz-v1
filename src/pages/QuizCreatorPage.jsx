@@ -9,6 +9,9 @@ const FILL_IN_THE_BLANKS = 'Fill in the blanks';
 // https://colorhunt.co/palette/756ab6ac87c5e0aed0ffe5e5
 // Desings https://dribbble.com/shots/20566500-Coding-Quiz-UI-for-Geecko-Skills
 
+// Panel
+// https://dribbble.com/shots/21163408-Wayyy-Questions-list
+
 function QuizCreatorPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [questionTitle, setQuestionTitle] = useState("");

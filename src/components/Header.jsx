@@ -1,8 +1,11 @@
 import { HomeFilled } from "@ant-design/icons";
 import { Button, Form, Input, Menu, Modal } from "antd";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
 import { createQuizz } from "../utils/firebase.utils";
+import { sendQuiz } from "../features/collection/collectionSlice";
 
 const Header = () => {
   const onMenuClick = (e) => {
@@ -15,6 +18,7 @@ const Header = () => {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -26,9 +30,7 @@ const Header = () => {
 
   const handleSubmitNewQuiz = async () => {
     const newQuizzProperties = form.getFieldsValue();
-
-    const { id: quizId } = await createQuizz(newQuizzProperties);
-
+    const { id: quizId } = await dispatch(sendQuiz(newQuizzProperties));
     setIsModalOpen(false);
     form.resetFields();
     navigate(`/edit-quizz/${quizId}`);
@@ -59,7 +61,7 @@ const Header = () => {
         onClick={onMenuClick}
         items={[
           {
-            label: <HomeFilled />,
+            label: <Link to={'/'}><HomeFilled /></Link>,
             key: "home",
           },
           {
