@@ -4,8 +4,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { createQuizz } from "../utils/firebase.utils";
-import { sendQuiz } from "../features/collection/collectionSlice";
+import { createQuiz } from "../features/collection/collectionSlice";
 
 const Header = () => {
   const onMenuClick = (e) => {
@@ -30,7 +29,7 @@ const Header = () => {
 
   const handleSubmitNewQuiz = async () => {
     const newQuizzProperties = form.getFieldsValue();
-    const { id: quizId } = await dispatch(sendQuiz(newQuizzProperties));
+    const { id: quizId } = await dispatch(createQuiz(newQuizzProperties));
     setIsModalOpen(false);
     form.resetFields();
     navigate(`/edit-quizz/${quizId}`);

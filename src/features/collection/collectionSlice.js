@@ -1,9 +1,13 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { createQuizz } from "../../utils/firebase.utils";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createQuizApi, removeQuizApi } from "../../utils/firebase.utils";
 
 const initialState = {
     quizzes: []
 };
+
+export const removeQuiz = createAsyncThunk('quizzes/removeQuiz', async (id) => {
+    const a = await removeQuizApi(id);
+});
 
 const collectionSlice = createSlice({
     name: 'collection',
@@ -11,7 +15,7 @@ const collectionSlice = createSlice({
     reducers: {
         addQuiz(state, action) {
             state.quizzes.push(action.payload);
-        }
+        },
     }
 });
 
@@ -21,9 +25,9 @@ export const {
 
 export default collectionSlice.reducer;
 
-export const sendQuiz = (quiz) => {
+export const createQuiz = (quiz) => {
     return async (dispatch) => {
-        const data = await createQuizz(quiz);
+        const data = await createQuizApi(quiz);
         const newQuiz = { id: data.id };
         dispatch(collectionSlice.actions.addQuiz(newQuiz));
         return newQuiz;

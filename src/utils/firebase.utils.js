@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { addDoc, collection, doc, getDocs, getFirestore } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, getFirestore, writeBatch } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_APP_FIREBASE_API_KEY,
@@ -42,7 +42,7 @@ export const getQuizzes = async () => {
   return await getAllDocuments('quizzes');
 };
 
-export const createQuizz = async (newQuizzProperties) => {
+export const createQuizApi = async (newQuizzProperties) => {
   let newQuiz = {}
   try {
     newQuiz = await createNewDoc('quizzes', newQuizzProperties);
@@ -52,4 +52,16 @@ export const createQuizz = async (newQuizzProperties) => {
     };
   }
   return newQuiz;
+};
+
+export const removeQuizApi = async (id) => {
+  const quizRef = doc(db, 'quizzes', id);
+  try {
+    const batch = writeBatch(db);
+    batch.delete(quizRef);
+    await batch.commit();
+  } catch (error) {
+    
+  }
+  return quizRef.id
 };
