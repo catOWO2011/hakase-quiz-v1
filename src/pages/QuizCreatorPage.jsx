@@ -1,7 +1,8 @@
-import { Button, Form, Modal } from 'antd';
+import { Button, Dropdown, Form, Modal } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import React, { useState } from 'react'
 import FillBlankCreator from '../components/FillBlankCreator';
+import { PlusOutlined } from '@ant-design/icons';
 
 const FILL_IN_THE_BLANKS = 'Fill in the blanks';
 
@@ -46,6 +47,20 @@ function QuizCreatorPage() {
     };
   };
 
+  const items = [
+    {
+      key: '1',
+      label: (
+        <button
+          onClick={handleAddQuestion(FILL_IN_THE_BLANKS)}
+          className=''
+        >
+          Fill in the blank
+        </button>
+      )
+    }
+  ];
+
   return (
     <Content>
       { isModalOpen && <Modal
@@ -67,14 +82,21 @@ function QuizCreatorPage() {
         }
       </Modal>}
       <div className='flex flex-col'>
-        <h2>Add question:</h2>
         <div>
-          <Button
+          <Dropdown
+            menu={{items}}
             className=''
-            onClick={handleAddQuestion(FILL_IN_THE_BLANKS)}
+            overlayStyle={{
+              
+            }}
           >
-            Fill in the blank
-          </Button>
+            <Button
+              icon={<PlusOutlined />}
+              type='primary'
+            >
+              Question
+            </Button>
+          </Dropdown>
         </div>
       </div>
       <div>

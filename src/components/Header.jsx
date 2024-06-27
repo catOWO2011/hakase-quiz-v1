@@ -2,9 +2,9 @@ import { HomeFilled } from "@ant-design/icons";
 import { Button, Form, Input, Menu, Modal } from "antd";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
-import { createQuiz } from "../features/collection/collectionSlice";
+import { createQuiz } from "../features/collection/quizzesSlice";
 
 const Header = () => {
   const onMenuClick = (e) => {

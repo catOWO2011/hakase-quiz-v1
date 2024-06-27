@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import collectionReducer from './features/collection/collectionSlice';
+import quizzesReducer from './features/collection/quizzesSlice';
 
 const store = configureStore({
     reducer: {
-        collection: collectionReducer
+        quizzes: quizzesReducer
     }
 });
 

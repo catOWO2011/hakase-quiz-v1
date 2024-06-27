@@ -5,7 +5,6 @@ export default function RootLayout() {
     return (
       <Layout>
         <Header>
-          
         </Header>
       </Layout>
     );

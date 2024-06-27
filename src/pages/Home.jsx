@@ -1,34 +1,53 @@
 import React, { useEffect, useState } from "react";
-import { getQuizzes } from "../utils/firebase.utils";
 import Title from "antd/es/typography/Title";
 import { Button } from "antd";
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { removeQuiz } from "../features/collection/collectionSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+
+import { fetchQuizzes, removeQuiz } from "../features/collection/quizzesSlice";
 
 function Home() {
-  const [quizzes, setQuizzes] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const status = useSelector(state => state.quizzes.status);
+  const quizzes = useSelector(state => state.quizzes.items);
 
   useEffect(() => {
-    const loadQuizzes = async () => {
-      const data = await getQuizzes();
-      console.log(data);
-      setQuizzes([...data]);
-    };
-
-    loadQuizzes();
-  }, []);
+    if (status == 'idle') {
+      dispatch(fetchQuizzes());
+    }
+  }, [status, dispatch]);
 
   const handleClickHomeIcon = (quizId) => {
     return () => navigate(`/edit-quizz/${quizId}`);
   };
 
   const handleDelete = (quizId) => {
-    return async () => {
-      await dispatch(removeQuiz(quizId));
+    return () => {
+      toast.promise(
+        dispatch(removeQuiz(quizId)).unwrap(),
+        {
+          pending: {
+            render(){
+              return "Deleting Quiz";
+            },
+            icon: false,
+          },
+          success: {
+            render(){
+              return 'Quiz deleted';
+            },
+            icon: "🟢",
+          },
+          error: {
+            render({data}){
+              console.error(data);
+            }
+          }
+        }
+      );
     };
   };
 
