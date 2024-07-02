@@ -29,7 +29,9 @@ const Header = () => {
 
   const handleSubmitNewQuiz = async () => {
     const newQuizzProperties = form.getFieldsValue();
-    const { id: quizId } = await dispatch(createQuiz(newQuizzProperties));
+    const { id: quizId } = await dispatch(createQuiz({...newQuizzProperties,
+      array: ['the', 'cat']
+    }));
     setIsModalOpen(false);
     form.resetFields();
     navigate(`/edit-quizz/${quizId}`);
@@ -48,7 +50,10 @@ const Header = () => {
             </Button>,
           ]}
         >
-          <Form form={form}>
+          <Form 
+            form={form}
+            className="mt-8"
+          >
             <Form.Item label="Quiz Name" name="title">
               <Input />
             </Form.Item>

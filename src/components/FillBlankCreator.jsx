@@ -74,18 +74,18 @@ export default function FillBlankCreator({ setCorrectAnswer, setQuestionText }) 
       tokens.map(
         ({ type, text }) => {
           text = text.split(/\s+/).join(" ");
-          return type === BLANK_TYPE ? `__${text.split(' ').join(' ')}__` : text
+          return type === BLANK_TYPE ? ' '.repeat(text.split(' ').join(' ').length) : text
         }).join(" ")
-      );
+    );
 
-      setCorrectAnswer(
-      tokens.map(({ text }) => text.split(/\s+/).join(" ")).join(" ")
+    setCorrectAnswer(
+      [...tokens.filter(({ type }) => type === BLANK_TYPE).map(({ text }) => text)]
     );
 
   }, [showInput, tokens]);
 
   return (
-    <div>
+    <>
       <div className="flex justify-end py-[10px]">
         <div className="flex gap-4">
           <Button onClick={handleAddBlank} className="items-center flex">
@@ -145,6 +145,6 @@ export default function FillBlankCreator({ setCorrectAnswer, setQuestionText }) 
           </li>
         </ul>
       </div>
-    </div>
+    </>
   );
 }

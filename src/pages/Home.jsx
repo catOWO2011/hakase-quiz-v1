@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 import { fetchQuizzes, removeQuiz } from "../features/collection/quizzesSlice";
+import { setQuizId } from "../features/question/questionsSlice";
 
 function Home() {
   const navigate = useNavigate();
@@ -21,7 +22,10 @@ function Home() {
   }, [status, dispatch]);
 
   const handleClickHomeIcon = (quizId) => {
-    return () => navigate(`/edit-quizz/${quizId}`);
+    return () => {
+      dispatch(setQuizId(quizId));
+      navigate(`/edit-quizz/${quizId}`);
+    };
   };
 
   const handleDelete = (quizId) => {
@@ -54,7 +58,7 @@ function Home() {
   return (
     <div className="w-full text-center">
       <Title>Quizzes</Title>
-      <div className="grid grid-cols-[repeat(auto-fit,_15rem)] gap-6 justify-between">
+      <div className="grid grid-cols-[repeat(auto-fit,_15rem)] gap-6">
         {
           quizzes.map(({ id, title }) =>
             <article 

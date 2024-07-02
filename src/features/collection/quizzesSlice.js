@@ -1,12 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { createQuizApi, getQuizzes, removeQuizApi } from "../../utils/firebase.utils";
-const IDLE = 'idle';
 
-const initialState = {
-    items: [],
-    status: IDLE
-};
+const IDLE = 'idle';
 
 export const fetchQuizzes = createAsyncThunk('quizzes/fetchQuizzes', async () => {
     return await getQuizzes();
@@ -20,6 +16,11 @@ export const removeQuiz = createAsyncThunk('quizzes/removeQuiz', async (id, { re
         rejectWithValue(error.message);
     }
 });
+
+const initialState = {
+    items: [],
+    status: IDLE
+};
 
 const quizzesSlice = createSlice({
     name: 'quizzes',
@@ -35,8 +36,8 @@ const quizzesSlice = createSlice({
                 state.items = state.items.filter(quiz => quiz.id !== action.payload);
             })
             .addCase(fetchQuizzes.fulfilled, (state, action) => {
-                // console.log(state.items);
                 state.items = action.payload
+                // console.log(state.items.array);
             })
     }
 });

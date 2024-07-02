@@ -3,8 +3,10 @@ import { Content } from 'antd/es/layout/layout';
 import React, { useState } from 'react'
 import FillBlankCreator from '../components/FillBlankCreator';
 import { PlusOutlined } from '@ant-design/icons';
+import MultipleChoiceCreator from '../components/MultipleChoiceCreator';
 
 const FILL_IN_THE_BLANKS = 'Fill in the blanks';
+const MULTIPLE_CHOICE = 'Multiple choice';
 
 // The palete being used is https://colorhunt.co/palette/00a9ff89cff3a0e9ffcdf5fd
 // https://colorhunt.co/palette/756ab6ac87c5e0aed0ffe5e5
@@ -22,6 +24,8 @@ function QuizCreatorPage() {
   
   const handleOk = () => {
     // Create question with correctAnswer and questionText
+    console.log('correctAnswer', correctAnswer);
+    console.log('question text', questionText);
   };
   
   const handleCancel = () => {
@@ -41,13 +45,21 @@ function QuizCreatorPage() {
               setCorrectAnswer={setCorrectAnswer} 
               setQuestionText={setQuestionText}
             />
-          )
+          );
+          break;
+        case MULTIPLE_CHOICE:
+          setModalContent(
+            <MultipleChoiceCreator
+              setCorrectAnswer={setCorrectAnswer} 
+              setQuestionText={setQuestionText}
+            />
+          );
           break;
       }
     };
   };
 
-  const items = [
+  const dropdownItems = [
     {
       key: '1',
       label: (
@@ -56,6 +68,17 @@ function QuizCreatorPage() {
           className=''
         >
           Fill in the blank
+        </button>
+      )
+    },
+    {
+      key: '2',
+      label: (
+        <button
+          onClick={handleAddQuestion(MULTIPLE_CHOICE)}
+          className=''
+        >
+          Multiple Choice
         </button>
       )
     }
@@ -84,7 +107,9 @@ function QuizCreatorPage() {
       <div className='flex flex-col'>
         <div>
           <Dropdown
-            menu={{items}}
+            menu={{
+              items: dropdownItems
+            }}
             className=''
             overlayStyle={{
               
