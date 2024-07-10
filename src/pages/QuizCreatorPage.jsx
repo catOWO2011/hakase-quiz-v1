@@ -1,9 +1,13 @@
-import { Button, Dropdown, Form, Modal } from 'antd';
+import { Button, Dropdown, Modal } from 'antd';
 import { Content } from 'antd/es/layout/layout';
-import React, { useState } from 'react'
-import FillBlankCreator from '../components/FillBlankCreator';
+import React, { useEffect, useState } from 'react'
 import { PlusOutlined } from '@ant-design/icons';
+import Title from 'antd/es/typography/Title';
+
+import FillBlankCreator from '../components/FillBlankCreator';
 import MultipleChoiceCreator from '../components/MultipleChoiceCreator';
+import { useDispatch } from 'react-redux';
+import { addQuestion } from '../features/question/questionsSlice';
 
 const FILL_IN_THE_BLANKS = 'Fill in the blanks';
 const MULTIPLE_CHOICE = 'Multiple choice';
@@ -15,17 +19,39 @@ const MULTIPLE_CHOICE = 'Multiple choice';
 // Panel
 // https://dribbble.com/shots/21163408-Wayyy-Questions-list
 
+export const QuestionDataContext = React.createContext(null);
+
+let questionInfo = {
+  text: '',
+  correctAnswers: [],
+  options: []
+};
+
 function QuizCreatorPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [questionTitle, setQuestionTitle] = useState("");
   const [modalContent, setModalContent] = useState(null);
+  const [questionReady, setQuestionReady] = useState(false);
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [questionText, setQuestionText] = useState('');
+  const dispatch = useDispatch();
+  questionInfo.putReady = setQuestionReady
+
+  useEffect(() => {
+    setQuestionReady(false);
+  }, []);
   
-  const handleOk = () => {
+  const handleOk = async () => {
     // Create question with correctAnswer and questionText
+    console.log(questionInfo);
     console.log('correctAnswer', correctAnswer);
     console.log('question text', questionText);
+    const { text, correctAnswers, options } = questionInfo;
+    await dispatch(addQuestion({
+      text,
+      options,
+      correctAnswers
+    }));
   };
   
   const handleCancel = () => {
@@ -36,8 +62,15 @@ function QuizCreatorPage() {
   
   const handleAddQuestion = (questionType) => {
     return () => {
+      questionInfo = {
+        text: '',
+        correctAnswers: [],
+        options: []
+      };
+
       setIsModalOpen(true);
       setQuestionTitle(questionType);
+
       switch (questionType) {
         case FILL_IN_THE_BLANKS:
           setModalContent(
@@ -49,10 +82,7 @@ function QuizCreatorPage() {
           break;
         case MULTIPLE_CHOICE:
           setModalContent(
-            <MultipleChoiceCreator
-              setCorrectAnswer={setCorrectAnswer} 
-              setQuestionText={setQuestionText}
-            />
+            <MultipleChoiceCreator />
           );
           break;
       }
@@ -95,16 +125,24 @@ function QuizCreatorPage() {
           <Button key="cancel" onClick={handleCancel}>
             Cancel
           </Button>,
-          <Button key="submit" type="primary" onClick={handleOk}>
-            Submit
+          <Button
+            key="submit"
+            type="primary"
+            onClick={handleOk}
+            disabled={!questionReady}
+          >
+            Submit  
           </Button>,
         ]}
       >
-        {
-          modalContent
-        }
+        <QuestionDataContext.Provider value={questionInfo}>
+          {
+            modalContent
+          }
+        </QuestionDataContext.Provider>
       </Modal>}
-      <div className='flex flex-col'>
+      <div className='flex justify-between items-center'>
+        <Title level={2}>Questions</Title>
         <div>
           <Dropdown
             menu={{
@@ -125,7 +163,7 @@ function QuizCreatorPage() {
         </div>
       </div>
       <div>
-
+        
       </div>
     </Content>
   );

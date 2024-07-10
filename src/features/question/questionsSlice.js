@@ -1,12 +1,27 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createQuestionApi } from "../../utils/firebase.utils";
 
-export const addQuestion = createAsyncThunk('questions/addQuestion', async () => {
-    
+export const addQuestion = createAsyncThunk('questions/addQuestion', async (question, { rejectWithValue, getState }) => {
+    try {
+        const { questions: { quizId } } = getState();
+        question = {
+            quizId,
+            ...question
+        };
+        console.log(question, 'question');
+        // const questionRef = await createQuestionApi(question);
+        // return {
+        //     id: questionRef.id,
+        //     ...question
+        // };
+    } catch (error) {
+        
+    }
 });
 
 const initialState = {
     items: [],
-    quizzId: null
+    quizId: null
 };
 
 const questionsSlice = createSlice({
@@ -14,7 +29,7 @@ const questionsSlice = createSlice({
     initialState,
     reducers: {
         setQuizId(state, action) {
-            state.quizzId = action.payload;
+            state.quizId = action.payload;
         }
     }
 });

@@ -65,3 +65,7 @@ export const removeQuizApi = async (id) => {
   }
   return quizRef.id
 };
+
+export const createQuestionApi = async (quiz) => {
+  return createNewDoc('questions', quiz);
+};
