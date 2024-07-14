@@ -1,14 +1,4 @@
-// function MultipleResponseCreator() {
-//   return (
-//     <div>MultipleResponseCreator</div>
-//   )
-// }
-
-// export default MultipleResponseCreator
-/**
- * Create a custom input that contains and
- */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Input, Form, Button, Checkbox, Alert } from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
 import TextArea from 'antd/es/input/TextArea';
@@ -107,55 +97,9 @@ const OptionCollectionInput = ({ _, onChange }) => {
   );
 };
 
-const CustomConcatenatedInput = ({ value = '', onChange }) => {
-  const [input1, setInput1] = useState('');
-  const [input2, setInput2] = useState('');
-  const [input3, setInput3] = useState('');
-
-  useEffect(() => {
-    const concatenatedValue = `${input1}${input2}${input3}`;
-    onChange(concatenatedValue);
-  }, [input1, input2, input3, onChange]);
-
-  return (
-    <div>
-      <Input
-        placeholder="Input 1"
-        value={input1}
-        onChange={(e) => setInput1(e.target.value)}
-        style={{ marginBottom: 8 }}
-      />
-      <Input
-        placeholder="Input 2"
-        value={input2}
-        onChange={(e) => setInput2(e.target.value)}
-        style={{ marginBottom: 8 }}
-      />
-      <Input
-        placeholder="Input 3"
-        value={input3}
-        onChange={(e) => setInput3(e.target.value)}
-      />
-      <Option />
-    </div>
-  );
-};
-
 const MultipleResponseCreator = () => {
   const [text, setText] = useState('');
 
-  // return (
-  //   <Form form={form} onFinish={onFinish}>
-  //     <Form.Item name="concatenatedValue" label="Concatenated Input">
-  //       <CustomConcatenatedInput />
-  //     </Form.Item>
-  //     <Form.Item>
-  //       <Button type="primary" htmlType="submit">
-  //         Submit
-  //       </Button>
-  //     </Form.Item>
-  //   </Form>
-  // );
   return (
     <>
       <Form.Item
