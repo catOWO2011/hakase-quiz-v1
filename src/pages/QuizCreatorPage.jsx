@@ -1,16 +1,18 @@
-import { Button, Dropdown, Modal } from 'antd';
+import { Button, Dropdown, Form, Modal } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import React, { useEffect, useState } from 'react'
 import { PlusOutlined } from '@ant-design/icons';
 import Title from 'antd/es/typography/Title';
 
-import FillBlankCreator from '../components/FillBlankCreator';
-import MultipleChoiceCreator from '../components/MultipleChoiceCreator';
 import { useDispatch } from 'react-redux';
 import { addQuestion } from '../features/question/questionsSlice';
+import FillBlankCreator from '../components/FillBlankCreator';
+import MultipleChoiceCreator from '../components/MultipleChoiceCreator';
+import MultipleResponseCreator from '../components/MultipleResponseCreator';
 
 const FILL_IN_THE_BLANKS = 'Fill in the blanks';
 const MULTIPLE_CHOICE = 'Multiple choice';
+const MULTIPLE_RESPONSE = 'Multiple response';
 
 // The palete being used is https://colorhunt.co/palette/00a9ff89cff3a0e9ffcdf5fd
 // https://colorhunt.co/palette/756ab6ac87c5e0aed0ffe5e5
@@ -34,6 +36,8 @@ function QuizCreatorPage() {
   const [questionReady, setQuestionReady] = useState(false);
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [questionText, setQuestionText] = useState('');
+  const [form] = Form.useForm();
+
   const dispatch = useDispatch();
   questionInfo.putReady = setQuestionReady
 
@@ -85,8 +89,18 @@ function QuizCreatorPage() {
             <MultipleChoiceCreator />
           );
           break;
+        case MULTIPLE_RESPONSE:
+          setModalContent(
+            <MultipleResponseCreator />
+          );
+          break
       }
     };
+  };
+
+  const onFinish = (values) => {
+    console.log(`Form values`, JSON.parse(values['options']));
+    setIsModalOpen(false);
   };
 
   const dropdownItems = [
@@ -111,36 +125,69 @@ function QuizCreatorPage() {
           Multiple Choice
         </button>
       )
+    },
+    {
+      key: '3',
+      label: (
+        <button
+          onClick={handleAddQuestion(MULTIPLE_RESPONSE)}
+        >
+          {MULTIPLE_RESPONSE}
+        </button>
+      )
     }
   ];
 
   return (
     <Content>
-      { isModalOpen && <Modal
-        title={questionTitle}
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="cancel" onClick={handleCancel}>
-            Cancel
-          </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            onClick={handleOk}
-            disabled={!questionReady}
+      { isModalOpen &&
+        <Modal
+          title={questionTitle}
+          open={isModalOpen}
+          onCancel={handleCancel}
+          footer={null}
+        >
+          <Form
+            form={form}
+            onFinish={onFinish}
           >
-            Submit  
-          </Button>,
-        ]}
-      >
-        <QuestionDataContext.Provider value={questionInfo}>
-          {
-            modalContent
-          }
-        </QuestionDataContext.Provider>
-      </Modal>}
+            { modalContent }
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Submit
+              </Button>
+              <Button onClick={handleCancel} style={{ marginLeft: 8 }}>
+                Cancel
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+        // <Modal
+        //   title={questionTitle}
+        //   open={isModalOpen}
+        //   onOk={handleOk}
+        //   onCancel={handleCancel}
+        //   footer={[
+        //     <Button key="cancel" onClick={handleCancel}>
+        //       Cancel
+        //     </Button>,
+        //     <Button
+        //       key="submit"
+        //       type="primary"
+        //       onClick={handleOk}
+        //       disabled={!questionReady}
+        //     >
+        //       Submit  
+        //     </Button>,
+        //   ]}
+        // >
+        //   <QuestionDataContext.Provider value={questionInfo}>
+        //     {
+        //       modalContent
+        //     }
+        //   </QuestionDataContext.Provider>
+        // </Modal>
+      }
       <div className='flex justify-between items-center'>
         <Title level={2}>Questions</Title>
         <div>

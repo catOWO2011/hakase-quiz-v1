@@ -5,7 +5,6 @@ import TextArea from "antd/es/input/TextArea";
 import React, { useContext, useEffect, useRef, useState } from "react";
 
 import { QuestionDataContext } from "../pages/QuizCreatorPage";
-import { data } from "autoprefixer";
 
 const EditableContext = React.createContext(null);
 
