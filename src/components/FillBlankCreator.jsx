@@ -1,5 +1,5 @@
 import { DeleteTwoTone, PlusCircleOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { Button, Form, Input } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 
 const PLACEHOLDER_FILL_BLANK = "Write the text to fill";
@@ -7,144 +7,154 @@ const PLACEHOLDER_FILL_TEXT = "Write the text ouside the blank";
 const BLANK_TYPE = "blank";
 const TEXT_TYPE = "text";
 
-export default function FillBlankCreator({ setCorrectAnswer, setQuestionText }) {
-  const [tokens, setTokens] = useState([]);
-  const [showInput, setShowInput] = useState(false);
-  const [placeHolderText, setPlaceHolderText] = useState("");
-  const [tokenType, setTokenType] = useState("");
+const InputOption = ({ inputText, type, removeOption, handleEditOption }) => {
+  const [inputValue, setInputValue] = useState(inputText ?? '');
+  const [inputWidth, setInputWidth] = useState(100);
+  const hiddenSpan = useRef(null);
   const inputRef = useRef(null);
 
-  const handleAddBlank = () => {
-    setShowInput(true);
-    setTokenType(BLANK_TYPE);
-    setPlaceHolderText(PLACEHOLDER_FILL_BLANK);
-  };
-
-  const handleAddText = () => {
-    setShowInput(true);
-    setTokenType(TEXT_TYPE);
-    setPlaceHolderText(PLACEHOLDER_FILL_TEXT);
-  };
-
-  const handleRemoveToken = (tokenIndex) => {
-    const newTokens = [...tokens];
-    newTokens.splice(tokenIndex, 1);
-    setTokens([...newTokens]);
-    setQuestionText(tokens.map(({ type, text }) => type === BLANK_TYPE ? `__${text}__` : text).join(" "));
-  };
-
-  const handleInputKeyDown = (e) => {
-    let {
-      target: { value },
-    } = e;
-
-    value = value.trim();
-
-    if (e.key == "Enter" && value) {
-      if (
-        tokens.find(
-          ({ type, text }) =>
-            text.toLowerCase() === value.toLowerCase() && tokenType === type
-        )
-      ) {
-        return;
+  useEffect(() => {
+    if (hiddenSpan.current) {
+      let newWidth = hiddenSpan.current.offsetWidth;
+      if (newWidth === 0) {
+        newWidth += 250;
+      } else {
+        newWidth += 70;
       }
-
-      setTokens([
-        ...tokens,
-        {
-          type: tokenType,
-          text: value,
-        },
-      ]);
-
-      inputRef.current.value = null;
-
-      setShowInput(false);
+      setInputWidth(newWidth);
     }
-  };
+  }, [inputValue]);
 
   useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
-    if (showInput) {
-      inputRef.current.focus();
-    }
-
-    setQuestionText(
-      tokens.map(
-        ({ type, text }) => {
-          text = text.split(/\s+/).join(" ");
-          return type === BLANK_TYPE ? ' '.repeat(text.split(' ').join(' ').length) : text
-        }).join(" ")
-    );
-
-    setCorrectAnswer(
-      [...tokens.filter(({ type }) => type === BLANK_TYPE).map(({ text }) => text)]
-    );
-
-  }, [showInput, tokens]);
+  const handleInputChange = ({ target: { name, value } }) => {
+    console.log(name, value);
+    setInputValue(value)
+    handleEditOption({ [name]: value });
+  };
 
   return (
-    <>
-      <div className="flex justify-end py-[10px]">
-        <div className="flex gap-4">
-          <Button onClick={handleAddBlank} className="items-center flex">
-            <PlusCircleOutlined />
-            Blank
-          </Button>
-          <Button onClick={handleAddText} className="items-center flex">
-            <PlusCircleOutlined />
-            Text
-          </Button>
-        </div>
+    <div
+      className="flex relative"
+    >
+      <Input
+        name="optionText"
+        className={`${type === BLANK_TYPE ? 'border-2 border-[#BB9AB1]' : 'border-0'} p-2`}
+        value={inputValue}
+        placeholder={type === BLANK_TYPE ? PLACEHOLDER_FILL_BLANK : PLACEHOLDER_FILL_TEXT}
+        onChange={handleInputChange}
+        style={{
+          width: `${inputWidth}px`
+        }}
+        ref={inputRef}
+        required
+      />
+      <span
+        ref={hiddenSpan}
+        style={{
+          visibility: 'hidden',
+          position: 'absolute',
+          whiteSpace: 'pre'
+        }}
+      >
+        {inputValue}
+      </span>
+      <Button
+        className="flex items-center absolute right-1 bg-[#FEFBD8] top-1"
+        onClick={removeOption}
+      >
+        <DeleteTwoTone />
+      </Button>
+    </div>
+  );
+};
+
+const OptionInputCollection = ({ _, onChange }) => {
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    if (options.some(({ type }) => type === BLANK_TYPE) && options.some(({ type }) => type === TEXT_TYPE)) {
+      onChange(JSON.stringify(options));
+    } else {
+      onChange('');
+    }
+  }, [options]);
+
+  const handleRemoveInputOption = (key) => {
+    return () => {
+      setOptions(options.filter(({ id }) => id !== key));
+    };
+  };
+
+  const handleEditOption = (key) => {
+    return (newProps) => {
+      const idxOption = options.findIndex(({ id }) => id === key);
+      options[idxOption] = { ...options[idxOption], ...newProps };
+      setOptions([...options]);
+    };
+  };
+
+  const handleAddInputOption = (type) => {
+    return () => {
+      setOptions([
+        ...options,
+        {
+          id: crypto.randomUUID(),
+          isCorrect: type === BLANK_TYPE,
+          optionText: "",
+          type
+        }
+      ]);
+    };
+  };
+
+  return (
+    <div>
+      <div
+        className="flex float-end gap-2 pb-2"
+      >
+        <Button className="flex items-center" onClick={handleAddInputOption(BLANK_TYPE)}>
+          <PlusCircleOutlined /> Insert Blank
+        </Button>
+        <Button className="flex items-center" onClick={handleAddInputOption(TEXT_TYPE)}>
+          <PlusCircleOutlined /> Insert Text
+        </Button>
       </div>
-      <div className="flex flex-wrap bg-white border-2 border-solid border-[#d6d6d6] px-[5px] pt-[5px] pb-0">
-        <ul className="inline-flex flex-wrap m-0 p-0 w-full mb-[10px]">
-          {tokens.map(({ type, text }, index) => (
-            <li
-              className={`flex
-                        items-center
-                        mr-[5px] mb-[5px]
-                        py-[5px] px-[10px]
-                        list-none
-                        rounded-[5px]
-                        ${type == BLANK_TYPE ? "bg-[#00A9FF]" : ""}`}
-              key={`token-${index}`}
-            >
-              {text}
-              <button
-                className={`
-                          items-center
-                          inline-flex
-                          p-0
-                          ml-[8px]
-                        `}
-                onClick={() => handleRemoveToken(index)}
-              >
-                <DeleteTwoTone />
-              </button>
-            </li>
-          ))}
-          <li className="bg-none grow p-0 flex mr-[5px] mb-[5px] items-center">
-            {showInput && (
-              <input
-                placeholder={placeHolderText}
-                onKeyDown={handleInputKeyDown}
-                className={
-                  `overflow-visi4ble
-                  w-full p-[5px]
-                  focus:border-[#00A9FF]
-                  focus:border-teal
-                  focus:outline-none
-                  focus:ring-0
-                  bg-[#${tokenType == BLANK_TYPE ? '89CFF3' : 'CDF5FD'}]`
-                }
-                ref={inputRef}
+      <ul
+        className="w-full flex items-start gap-3 flex-wrap"
+      >
+        {
+          options.map(({ id, ...otherProps }) =>
+            <li key={id}>
+              <InputOption
+                {...otherProps}
+                removeOption={handleRemoveInputOption(id)}
+                handleEditOption={handleEditOption(id)}
               />
-            )}
-          </li>
-        </ul>
-      </div>
+            </li>
+          )
+        }
+      </ul>
+    </div>
+  );
+};
+
+export default function FillBlankCreator() {
+  return (
+    <>
+      <Form.Item
+        name="options"
+        rules={[
+          {
+            required: true,
+            message: "Add at least one text and one blank element."
+          }
+        ]}
+      >
+        <OptionInputCollection />
+      </Form.Item>
     </>
   );
 }

@@ -16,14 +16,21 @@ const Option = ({ handleEditOption, optionText, handleDeleteOption, handleUpdate
   };
 
   return (
-    <div className='flex align-middle justify-between mt-3 mb-3'>
+    <div className='flex items-center justify-between mt-3 mb-3'>
       <Checkbox
         name='isCorrect' defaultValue={false} onChange={handleOnCheck}
       />
-      <Input
-        className='ml-2 mr-2'
-        name='optionText' defaultValue={optionText} onChange={handleTextChange}
-      />
+      <div
+        className='w-full mx-4'
+      >
+        <Input
+          className='ml-2 mr-2'
+          name='optionText'
+          defaultValue={optionText}
+          onChange={handleTextChange}
+          required
+        />
+      </div>
       <Button
         className='inline-flex items-center'
         onClick={handleDeleteOption}
@@ -59,16 +66,16 @@ const OptionCollectionInput = ({ _, onChange }) => {
     return () => {
       const remainOptions = options.filter(({id}) => id !== optionId);
       setOptions(remainOptions);
-      if (remainOptions.length < 2) {
-        onChange('');
-      } else {
+      if (remainOptions.length > 1 && remainOptions.some(({isCorrect}) => isCorrect === true)) {
         onChange(JSON.stringify(remainOptions));
+      } else {
+        onChange('');
       }
     };
   };
 
   const handleUpdateOptions = () => {
-    if (options.length > 1) {
+    if (options.length > 1 && options.some(({isCorrect}) => isCorrect === true)) {
       onChange(JSON.stringify(options));
     } else {
       onChange('');
@@ -131,7 +138,7 @@ const MultipleResponseCreator = () => {
         rules={[
           {
             required: true,
-            message: 'At least two options are required'
+            message: 'At least two options are required and it one needs to be true.'
           }
         ]}
       >

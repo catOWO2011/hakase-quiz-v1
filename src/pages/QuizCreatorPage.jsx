@@ -33,17 +33,9 @@ function QuizCreatorPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [questionTitle, setQuestionTitle] = useState("");
   const [modalContent, setModalContent] = useState(null);
-  const [questionReady, setQuestionReady] = useState(false);
-  const [correctAnswer, setCorrectAnswer] = useState('');
-  const [questionText, setQuestionText] = useState('');
   const [form] = Form.useForm();
 
   const dispatch = useDispatch();
-  questionInfo.putReady = setQuestionReady
-
-  useEffect(() => {
-    setQuestionReady(false);
-  }, []);
   
   const handleOk = async () => {
     // Create question with correctAnswer and questionText
@@ -78,9 +70,7 @@ function QuizCreatorPage() {
       switch (questionType) {
         case FILL_IN_THE_BLANKS:
           setModalContent(
-            <FillBlankCreator 
-              setCorrectAnswer={setCorrectAnswer} 
-              setQuestionText={setQuestionText}
+            <FillBlankCreator
             />
           );
           break;
@@ -99,8 +89,14 @@ function QuizCreatorPage() {
   };
 
   const onFinish = (values) => {
-    console.log(`Form values`, JSON.parse(values['options']));
     setIsModalOpen(false);
+    console.log(values);
+    form.resetFields();
+  };
+
+  const handleOnCancel = () => {
+    setIsModalOpen(false);
+    form.resetFields();
   };
 
   const dropdownItems = [
@@ -146,6 +142,7 @@ function QuizCreatorPage() {
           open={isModalOpen}
           onCancel={handleCancel}
           footer={null}
+          width={1000}
         >
           <Form
             form={form}
@@ -156,37 +153,12 @@ function QuizCreatorPage() {
               <Button type="primary" htmlType="submit">
                 Submit
               </Button>
-              <Button onClick={handleCancel} style={{ marginLeft: 8 }}>
+              <Button style={{ marginLeft: 8 }} onClick={handleOnCancel}>
                 Cancel
               </Button>
             </Form.Item>
           </Form>
         </Modal>
-        // <Modal
-        //   title={questionTitle}
-        //   open={isModalOpen}
-        //   onOk={handleOk}
-        //   onCancel={handleCancel}
-        //   footer={[
-        //     <Button key="cancel" onClick={handleCancel}>
-        //       Cancel
-        //     </Button>,
-        //     <Button
-        //       key="submit"
-        //       type="primary"
-        //       onClick={handleOk}
-        //       disabled={!questionReady}
-        //     >
-        //       Submit  
-        //     </Button>,
-        //   ]}
-        // >
-        //   <QuestionDataContext.Provider value={questionInfo}>
-        //     {
-        //       modalContent
-        //     }
-        //   </QuestionDataContext.Provider>
-        // </Modal>
       }
       <div className='flex justify-between items-center'>
         <Title level={2}>Questions</Title>
