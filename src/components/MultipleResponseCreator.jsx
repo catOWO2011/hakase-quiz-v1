@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Input, Form, Button, Checkbox, Alert } from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
 import TextArea from 'antd/es/input/TextArea';
+import { questionConstants } from '../constants/question';
 
 const Option = ({ handleEditOption, optionText, handleDeleteOption, handleUpdateOptions }) => {
 
@@ -109,6 +110,11 @@ const MultipleResponseCreator = () => {
 
   return (
     <>
+      <Form.Item
+        name="type"
+        hidden={true}
+        initialValue={questionConstants.MULTIPLE_RESPONSE}
+      />
       <Form.Item
         name="text"
         rules={[

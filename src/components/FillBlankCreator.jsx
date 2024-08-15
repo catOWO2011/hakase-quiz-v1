@@ -1,6 +1,7 @@
 import { DeleteTwoTone, PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { questionConstants } from "../constants/question";
 
 const PLACEHOLDER_FILL_BLANK = "Write the text to fill";
 const PLACEHOLDER_FILL_TEXT = "Write the text ouside the blank";
@@ -30,7 +31,6 @@ const InputOption = ({ inputText, type, removeOption, handleEditOption }) => {
   }, []);
 
   const handleInputChange = ({ target: { name, value } }) => {
-    console.log(name, value);
     setInputValue(value)
     handleEditOption({ [name]: value });
   };
@@ -80,7 +80,7 @@ const OptionInputCollection = ({ _, onChange }) => {
     } else {
       onChange('');
     }
-  }, [options]);
+  }, [onChange, options]);
 
   const handleRemoveInputOption = (key) => {
     return () => {
@@ -144,6 +144,11 @@ const OptionInputCollection = ({ _, onChange }) => {
 export default function FillBlankCreator() {
   return (
     <>
+      <Form.Item
+        hidden={true}
+        name="type"
+        initialValue={questionConstants.FILL_IN_THE_BLANKS}
+      />
       <Form.Item
         name="options"
         rules={[

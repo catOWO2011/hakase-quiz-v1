@@ -70,8 +70,7 @@ function QuizCreatorPage() {
       switch (questionType) {
         case FILL_IN_THE_BLANKS:
           setModalContent(
-            <FillBlankCreator
-            />
+            <FillBlankCreator />
           );
           break;
         case MULTIPLE_CHOICE:
@@ -90,7 +89,8 @@ function QuizCreatorPage() {
 
   const onFinish = (values) => {
     setIsModalOpen(false);
-    console.log(values);
+    console.log('values', values);
+
     form.resetFields();
   };
 

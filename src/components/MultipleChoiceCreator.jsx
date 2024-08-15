@@ -2,6 +2,7 @@ import { DeleteTwoTone } from "@ant-design/icons";
 import { Alert, Button, Form, Input, Radio, Table, Typography } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import React, { useEffect, useState } from "react";
+import { questionConstants } from "../constants/question";
 
 const Option = ({ optionText, handleDelete, handleEditOption, id }) => {
 
@@ -46,7 +47,7 @@ const OptionCollectionInput = ({ _, onChange }) => {
     } else {
       onChange('');
     }
-  }, [options]);
+  }, [onChange, options]);
 
   const handleAddOption = () => {
     setOptions([
@@ -121,6 +122,11 @@ export default function MultipleChoiceCreator() {
 
   return (
     <>
+      <Form.Item
+        name="type"
+        hidden={true}
+        initialValue={questionConstants.MULTIPLE_CHOICE}
+      />
       <Form.Item
         name="text"
         rules={[
