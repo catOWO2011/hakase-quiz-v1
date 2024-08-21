@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { addDoc, collection, doc, getDocs, getFirestore, writeBatch } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore, query, where, writeBatch } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_APP_FIREBASE_API_KEY,
@@ -66,6 +66,33 @@ export const removeQuizApi = async (id) => {
   return quizRef.id
 };
 
+export const getQuizApi = async (id) => {
+  const quizRef = doc(db, 'quizzes', id);
+  let quizData = { id: quizRef.id };
+  try {
+    const q = query(collection(db, 'questions'), where('quizId', '==', quizRef.id));
+    const querySnapshot = await getDocs(q);
+    quizData.questions = []
+    querySnapshot.forEach((doc) => {
+      quizData.questions.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+  } catch (error) {
+    
+  }
+  return {
+    quiz: {
+      ...quizData
+    }
+  };
+};
+
 export const createQuestionApi = async (quiz) => {
   return createNewDoc('questions', quiz);
+};
+
+export const deleteQuestionApi = async (id) => {
+  await deleteDoc(doc(db, 'questions', id));
 };

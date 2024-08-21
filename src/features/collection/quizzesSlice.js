@@ -1,58 +1,65 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-import { createQuizApi, getQuizzes, removeQuizApi } from "../../utils/firebase.utils";
+import {
+  createQuizApi,
+  getQuizzes,
+  removeQuizApi,
+} from "../../utils/firebase.utils";
 
-const IDLE = 'idle';
+const IDLE = "idle";
 
-export const fetchQuizzes = createAsyncThunk('quizzes/fetchQuizzes', async () => {
+export const fetchQuizzes = createAsyncThunk(
+  "quizzes/fetchQuizzes",
+  async () => {
     return await getQuizzes();
-});
+  }
+);
 
-export const removeQuiz = createAsyncThunk('quizzes/removeQuiz', async (id, { rejectWithValue }) => {
+export const removeQuiz = createAsyncThunk(
+  "quizzes/removeQuiz",
+  async (id, { rejectWithValue }) => {
     try {
-        await removeQuizApi(id);
-        return id;
+      await removeQuizApi(id);
+      return id;
     } catch (error) {
-        rejectWithValue(error.message);
+      rejectWithValue(error.message);
     }
-});
+  }
+);
 
 const initialState = {
-    items: [],
-    status: IDLE
+  items: [],
+  status: IDLE,
 };
 
 const quizzesSlice = createSlice({
-    name: 'quizzes',
-    initialState,
-    reducers: {
-        addQuiz(state, action) {
-            state.items.push(action.payload);
-        },
+  name: "quizzes",
+  initialState,
+  reducers: {
+    addQuiz(state, action) {
+      state.items.push(action.payload);
     },
-    extraReducers: (builder) => {
-        builder
-            .addCase(removeQuiz.fulfilled, (state, action) => {
-                state.items = state.items.filter(quiz => quiz.id !== action.payload);
-            })
-            .addCase(fetchQuizzes.fulfilled, (state, action) => {
-                state.items = action.payload
-                // console.log(state.items.array);
-            })
-    }
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(removeQuiz.fulfilled, (state, action) => {
+        state.items = state.items.filter((quiz) => quiz.id !== action.payload);
+      })
+      .addCase(fetchQuizzes.fulfilled, (state, action) => {
+        state.items = action.payload;
+      });
+  },
 });
 
-export const {
-    addQuiz
-} = quizzesSlice.actions;
+export const { addQuiz } = quizzesSlice.actions;
 
 export default quizzesSlice.reducer;
 
 export const createQuiz = (quiz) => {
-    return async (dispatch) => {
-        const data = await createQuizApi(quiz);
-        const newQuiz = { id: data.id };
-        dispatch(quizzesSlice.actions.addQuiz(newQuiz));
-        return newQuiz;
-    };
+  return async (dispatch) => {
+    const data = await createQuizApi(quiz);
+    const newQuiz = { id: data.id };
+    dispatch(quizzesSlice.actions.addQuiz(newQuiz));
+    return newQuiz;
+  };
 };

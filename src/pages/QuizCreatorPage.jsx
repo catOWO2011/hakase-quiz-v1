@@ -1,18 +1,21 @@
 import { Button, Dropdown, Form, Modal } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import React, { useEffect, useState } from 'react'
-import { PlusOutlined } from '@ant-design/icons';
+import { DeleteTwoTone, EditTwoTone, PlusOutlined } from '@ant-design/icons';
 import Title from 'antd/es/typography/Title';
 
-import { useDispatch } from 'react-redux';
-import { addQuestion } from '../features/question/questionsSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addOneQuestion, addQuestion, deleteQuestion, setQuestions, setQuizId } from '../features/question/questionsSlice';
 import FillBlankCreator from '../components/FillBlankCreator';
 import MultipleChoiceCreator from '../components/MultipleChoiceCreator';
 import MultipleResponseCreator from '../components/MultipleResponseCreator';
+import { useLoaderData } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const FILL_IN_THE_BLANKS = 'Fill in the blanks';
 const MULTIPLE_CHOICE = 'Multiple choice';
 const MULTIPLE_RESPONSE = 'Multiple response';
+const FILL_IN_THE_BLANK_ICON = 'ri-space';
 
 // The palete being used is https://colorhunt.co/palette/00a9ff89cff3a0e9ffcdf5fd
 // https://colorhunt.co/palette/756ab6ac87c5e0aed0ffe5e5
@@ -23,32 +26,20 @@ const MULTIPLE_RESPONSE = 'Multiple response';
 
 export const QuestionDataContext = React.createContext(null);
 
-let questionInfo = {
-  text: '',
-  correctAnswers: [],
-  options: []
-};
-
 function QuizCreatorPage() {
+  const quizData = useLoaderData();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [questionTitle, setQuestionTitle] = useState("");
   const [modalContent, setModalContent] = useState(null);
   const [form] = Form.useForm();
-
   const dispatch = useDispatch();
-  
-  const handleOk = async () => {
-    // Create question with correctAnswer and questionText
-    console.log(questionInfo);
-    console.log('correctAnswer', correctAnswer);
-    console.log('question text', questionText);
-    const { text, correctAnswers, options } = questionInfo;
-    await dispatch(addQuestion({
-      text,
-      options,
-      correctAnswers
-    }));
-  };
+
+  useEffect(() => {
+    dispatch(setQuizId(quizData.id));
+    dispatch(setQuestions(quizData.questions));
+  }, [dispatch, quizData.id, quizData.questions])
+
+  const questions = useSelector(state => state.questions.items);
   
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -58,11 +49,6 @@ function QuizCreatorPage() {
   
   const handleAddQuestion = (questionType) => {
     return () => {
-      questionInfo = {
-        text: '',
-        correctAnswers: [],
-        options: []
-      };
 
       setIsModalOpen(true);
       setQuestionTitle(questionType);
@@ -87,10 +73,57 @@ function QuizCreatorPage() {
     };
   };
 
-  const onFinish = (values) => {
-    setIsModalOpen(false);
-    console.log('values', values);
+  const handleDeleteQuestion = (id) => {
+    return () => {
+      toast.promise(
+        dispatch(deleteQuestion(id)).unwrap(),
+        {
+          pending: {
+            render() {
+              return 'Deleting Question';
+            },
+            icon: false
+          },
+          success: {
+            render() {
+              dispatch(setQuestions(questions.filter(({ id: questionId }) => questionId != id)));
+              return 'Question deleted.';
+            }
+          },
+          error: {
+            render({ data }) {
+              console.error(data);
+            }
+          }
+        }
+      );
+    };
+  };
 
+  const onFinish = async (values) => {
+    setIsModalOpen(false);
+    toast.promise(
+      dispatch(addQuestion(values)).unwrap(),
+      {
+        pending: {
+          render() {
+            return "Adding Question...";
+          },
+          icon: false,
+        },
+        success: {
+          render() {
+            return "Question Added";
+          },
+          icon: "🟢",
+        },
+        error: {
+          render({ data }) {
+            console.error(data);
+          }
+        }
+      }
+    );
     form.resetFields();
   };
 
@@ -181,8 +214,61 @@ function QuizCreatorPage() {
           </Dropdown>
         </div>
       </div>
-      <div>
-        
+      <div className='
+        grid
+        grid-cols-[repeat(4,1fr)]
+        [margin-block:4rem]
+        gap-4
+      '>
+        {
+          questions.map(
+            ({ id, type }, number) => 
+              <div key={id} className='
+                p-4 
+                rounded-[5px]
+                shadow-[5px_5px_20px_rgba(0,0,0,0.1)]
+                '>
+                <div className='
+                  flex
+                  justify-between
+                  align-middle
+                '>
+                  <span className='
+                    mb-4
+                    py-[5px]
+                    px-[11px]
+                    text-2xl
+                    inline-block
+                    rounded-[5px]
+                    bg-[#f6efef]
+                    text-[#f04a0c]
+                  '>
+                    <i className="ri-space"></i>
+                  </span>
+                  <div className="p-2 flex justify-between gap-2 items-center">
+                    <Button
+                      className="cursor-pointer"
+                      icon={<EditTwoTone />}
+                      onClick={() => {}}
+                    />
+                    <Button
+                      className="cursor-pointer"
+                      icon={<DeleteTwoTone />}
+                      onClick={handleDeleteQuestion(id)}
+                    >
+                    </Button>
+                  </div>
+                </div>
+                <h4 className='
+                  mb-2
+                  text-xl
+                  font-medium
+                '>
+                  Question { number + 1 }
+                </h4>
+              </div>
+          )
+        }
       </div>
     </Content>
   );

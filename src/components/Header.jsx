@@ -29,12 +29,10 @@ const Header = () => {
 
   const handleSubmitNewQuiz = async () => {
     const newQuizzProperties = form.getFieldsValue();
-    const { id: quizId } = await dispatch(createQuiz({...newQuizzProperties,
-      array: ['the', 'cat']
-    }));
+    const { id: quizId } = await dispatch(createQuiz(newQuizzProperties));
     setIsModalOpen(false);
     form.resetFields();
-    navigate(`/edit-quizz/${quizId}`);
+    navigate(`/quizzes/${quizId}/edit`);
   };
 
   return (

@@ -24,7 +24,7 @@ function Home() {
   const handleClickHomeIcon = (quizId) => {
     return () => {
       dispatch(setQuizId(quizId));
-      navigate(`/edit-quizz/${quizId}`);
+      navigate(`/quizzes/${quizId}/edit`);
     };
   };
 
@@ -46,7 +46,7 @@ function Home() {
             icon: "🟢",
           },
           error: {
-            render({data}){
+            render({ data }){
               console.error(data);
             }
           }

@@ -148,7 +148,9 @@ export default function FillBlankCreator() {
         hidden={true}
         name="type"
         initialValue={questionConstants.FILL_IN_THE_BLANKS}
-      />
+      >
+        <Input />
+      </Form.Item>
       <Form.Item
         name="options"
         rules={[
