@@ -114,7 +114,9 @@ const MultipleResponseCreator = () => {
         name="type"
         hidden={true}
         initialValue={questionConstants.MULTIPLE_RESPONSE}
-      />
+      >
+        <Input />
+      </Form.Item>
       <Form.Item
         name="text"
         rules={[

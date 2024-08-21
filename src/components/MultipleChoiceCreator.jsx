@@ -41,7 +41,6 @@ const OptionCollectionInput = ({ _, onChange }) => {
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
-    // console.log(options);
     if (options.some(({isCorrect}) => isCorrect === true) && options.some(({isCorrect}) => isCorrect === false)) {
       onChange(JSON.stringify(options));
     } else {
@@ -126,7 +125,9 @@ export default function MultipleChoiceCreator() {
         name="type"
         hidden={true}
         initialValue={questionConstants.MULTIPLE_CHOICE}
-      />
+      >
+        <Input />
+      </Form.Item>
       <Form.Item
         name="text"
         rules={[
