@@ -1,14 +1,14 @@
 import { DeleteTwoTone, PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import { useEffect, useRef, useState } from "react";
-import { questionConstants } from "../constants/question";
+import { questionConstantsText } from "../constants/question";
 
 const PLACEHOLDER_FILL_BLANK = "Write the text to fill";
 const PLACEHOLDER_FILL_TEXT = "Write the text ouside the blank";
 const BLANK_TYPE = "blank";
 const TEXT_TYPE = "text";
 
-const InputOption = ({ inputText, type, removeOption, handleEditOption }) => {
+const InputOption = ({ optionText: inputText, type, removeOption, handleEditOption }) => {
   const [inputValue, setInputValue] = useState(inputText ?? '');
   const [inputWidth, setInputWidth] = useState(100);
   const hiddenSpan = useRef(null);
@@ -71,8 +71,9 @@ const InputOption = ({ inputText, type, removeOption, handleEditOption }) => {
   );
 };
 
-const OptionInputCollection = ({ _, onChange }) => {
-  const [options, setOptions] = useState([]);
+const OptionInputCollection = ({ _, onChange, initialOptions }) => {
+  
+  const [options, setOptions] = useState(initialOptions);
 
   useEffect(() => {
     if (options.some(({ type }) => type === BLANK_TYPE) && options.some(({ type }) => type === TEXT_TYPE)) {
@@ -141,13 +142,13 @@ const OptionInputCollection = ({ _, onChange }) => {
   );
 };
 
-export default function FillBlankCreator() {
+export default function FillBlankCreator({ question }) {
   return (
     <>
       <Form.Item
         hidden={true}
         name="type"
-        initialValue={questionConstants.FILL_IN_THE_BLANKS}
+        initialValue={questionConstantsText.FILL_IN_THE_BLANKS}
       >
         <Input />
       </Form.Item>
@@ -160,7 +161,7 @@ export default function FillBlankCreator() {
           }
         ]}
       >
-        <OptionInputCollection />
+        <OptionInputCollection initialOptions = { JSON.parse(question.options) }/>
       </Form.Item>
     </>
   );

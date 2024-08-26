@@ -1,0 +1,16 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="48" height="48" fill="#F5F5F5"/>
+<rect width="48" height="48" fill="white"/>
+<rect x="3.5" y="3.5" width="11" height="10" rx="1.5" fill="#6DB1FE" stroke="black"/>
+<rect x="3.5" y="18.5" width="11" height="10" rx="1.5" fill="white" stroke="black"/>
+<rect x="3.5" y="33.5" width="11" height="10" rx="1.5" fill="#6DB1FE" stroke="black"/>
+<path d="M5 38.5L6.6 40L7.13333 40.5L7.66667 41L8.73333 40L9.26667 39.5L9.8 39L13 36" stroke="black"/>
+<path d="M5 8.5L6.6 10L7.13333 10.5L7.66667 11L8.73333 10L9.26667 9.5L9.8 9L13 6" stroke="black"/>
+<line x1="17" y1="6.5" x2="43" y2="6.5" stroke="black"/>
+<line x1="17" y1="20.5" x2="38" y2="20.5" stroke="black"/>
+<line x1="17" y1="9.5" x2="46" y2="9.5" stroke="black"/>
+<line x1="17" y1="23.5" x2="46" y2="23.5" stroke="black"/>
+<line x1="17" y1="26.5" x2="43" y2="26.5" stroke="black"/>
+<line x1="17" y1="37.5" x2="46" y2="37.5" stroke="black"/>
+<line x1="17" y1="40.5" x2="38" y2="40.5" stroke="black"/>
+</svg>

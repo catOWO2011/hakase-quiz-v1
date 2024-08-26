@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { createQuestionApi, deleteQuestionApi } from "../../utils/firebase.utils";
+import {
+  createQuestionApi,
+  deleteQuestionApi,
+  editQuestionApi,
+} from "../../utils/firebase.utils";
 import { toast } from "react-toastify";
 
 export const addQuestion = createAsyncThunk(
@@ -25,12 +29,25 @@ export const addQuestion = createAsyncThunk(
   }
 );
 
+export const editQuestion = createAsyncThunk(
+  "questions/editQuestion",
+  async (question, { rejectWithValue }) => {
+    try {
+      const { id, ...newQuestionData } = question;
+      await editQuestionApi(id, newQuestionData);
+      return question;
+    } catch (error) {
+      toast.error("Failed to edit the question");
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const deleteQuestion = createAsyncThunk(
   "questions/deleteQuestion",
   async (id, { rejectWithValue }) => {
     try {
       await deleteQuestionApi(id);
-      
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -61,9 +78,14 @@ const questionsSlice = createSlice({
       .addCase(addQuestion.fulfilled, (state, action) => {
         state.items.push(action.payload);
       })
-  }
+      .addCase(editQuestion.fulfilled, (state, action) => {
+        state.items = state.items.filter(({ id }) => id != action.payload.id);
+        state.items.push(action.payload);
+      });
+  },
 });
 
-export const { setQuizId, setQuestions, addOneQuestion } = questionsSlice.actions;
+export const { setQuizId, setQuestions, addOneQuestion } =
+  questionsSlice.actions;
 
 export default questionsSlice.reducer;

@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Input, Form, Button, Checkbox, Alert } from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
 import TextArea from 'antd/es/input/TextArea';
-import { questionConstants } from '../constants/question';
+import { questionConstantsText } from '../constants/question';
 
-const Option = ({ handleEditOption, optionText, handleDeleteOption, handleUpdateOptions }) => {
+const Option = ({ handleEditOption, optionText, handleDeleteOption, handleUpdateOptions, isCorrect }) => {
 
   const handleOnCheck = ({ target: { name, checked } }) => {
     handleEditOption()[name] = checked;
@@ -19,7 +19,10 @@ const Option = ({ handleEditOption, optionText, handleDeleteOption, handleUpdate
   return (
     <div className='flex items-center justify-between mt-3 mb-3'>
       <Checkbox
-        name='isCorrect' defaultValue={false} onChange={handleOnCheck}
+        name='isCorrect'
+        defaultValue={false}
+        onChange={handleOnCheck}
+        checked={isCorrect}
       />
       <div
         className='w-full mx-4'
@@ -42,8 +45,8 @@ const Option = ({ handleEditOption, optionText, handleDeleteOption, handleUpdate
   );
 };
 
-const OptionCollectionInput = ({ _, onChange }) => {
-  const [options, setOptions] = useState([]);
+const OptionCollectionInput = ({ _, onChange, initialOptions }) => {
+  const [options, setOptions] = useState(initialOptions);
 
   const handleAddOption = () => {
     setOptions([
@@ -105,20 +108,21 @@ const OptionCollectionInput = ({ _, onChange }) => {
   );
 };
 
-const MultipleResponseCreator = () => {
-  const [text, setText] = useState('');
+const MultipleResponseCreator = ({ question }) => {
+  const [text, setText] = useState(question.text);
 
   return (
     <>
       <Form.Item
         name="type"
         hidden={true}
-        initialValue={questionConstants.MULTIPLE_RESPONSE}
+        initialValue={questionConstantsText.MULTIPLE_RESPONSE}
       >
         <Input />
       </Form.Item>
       <Form.Item
         name="text"
+        initialValue={text}
         rules={[
           {
             required: true,
@@ -146,11 +150,11 @@ const MultipleResponseCreator = () => {
         rules={[
           {
             required: true,
-            message: 'At least two options are required and it one needs to be true.'
+            message: 'At least two options are required and one needs to be true.'
           }
         ]}
       >
-        <OptionCollectionInput />
+        <OptionCollectionInput initialOptions={JSON.parse(question.options)}/>
       </Form.Item>
     </>
   );

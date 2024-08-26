@@ -1,10 +1,10 @@
 import { DeleteTwoTone } from "@ant-design/icons";
-import { Alert, Button, Form, Input, Radio, Table, Typography } from "antd";
+import { Alert, Button, Form, Input, Radio } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import React, { useEffect, useState } from "react";
-import { questionConstants } from "../constants/question";
+import { questionConstantsText } from "../constants/question";
 
-const Option = ({ optionText, handleDelete, handleEditOption, id }) => {
+const Option = ({ optionText, handleDelete, handleEditOption, isCorrect, id }) => {
 
   const handleEditText = ({ target: { name, value }}) => {
     handleEditOption({ [name]: value });
@@ -15,6 +15,7 @@ const Option = ({ optionText, handleDelete, handleEditOption, id }) => {
       <Radio
         name="isCorrect"
         value={id}
+        checked={isCorrect}
       />
       <div
         className="w-full"
@@ -37,8 +38,8 @@ const Option = ({ optionText, handleDelete, handleEditOption, id }) => {
   );
 };
 
-const OptionCollectionInput = ({ _, onChange }) => {
-  const [options, setOptions] = useState([]);
+const OptionCollectionInput = ({ _, onChange, initialOptions }) => {
+  const [options, setOptions] = useState(initialOptions);
 
   useEffect(() => {
     if (options.some(({isCorrect}) => isCorrect === true) && options.some(({isCorrect}) => isCorrect === false)) {
@@ -92,10 +93,14 @@ const OptionCollectionInput = ({ _, onChange }) => {
     }));
   };
 
+  const selectedOption = options.find(({isCorrect}) => isCorrect);
+
   return (
     <div>
       <ul>
-        <Radio.Group className="w-full" name="isCorrect" onChange={handleOnChangeRadioGroup}>
+        <Radio.Group className="w-full" name="isCorrect" onChange={handleOnChangeRadioGroup}
+          value={selectedOption ? selectedOption.id : ''}
+        >
           {
             options.map(
               ({ id, ...otherProps }) => 
@@ -116,15 +121,15 @@ const OptionCollectionInput = ({ _, onChange }) => {
   );
 };
 
-export default function MultipleChoiceCreator() {
-  const [text, setText] = useState('');
+export default function MultipleChoiceCreator({ question }) {
+  const [text, setText] = useState(question.text);
 
   return (
     <>
       <Form.Item
         name="type"
         hidden={true}
-        initialValue={questionConstants.MULTIPLE_CHOICE}
+        initialValue={questionConstantsText.MULTIPLE_CHOICE}
       >
         <Input />
       </Form.Item>
@@ -136,6 +141,7 @@ export default function MultipleChoiceCreator() {
             message: 'A question is required.'
           }
         ]}
+        initialValue={text}
       >
         <TextArea
           value={text}
@@ -161,7 +167,7 @@ export default function MultipleChoiceCreator() {
           }
         ]}
       >
-        <OptionCollectionInput />
+        <OptionCollectionInput initialOptions={JSON.parse(question.options)}/>
       </Form.Item>
     </>
   );
