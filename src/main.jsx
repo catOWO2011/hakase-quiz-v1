@@ -7,6 +7,7 @@ import 'remixicon/fonts/remixicon.css'
 
 import App from './App.jsx'
 import store from './store.js'
+import Header from './components/Header.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

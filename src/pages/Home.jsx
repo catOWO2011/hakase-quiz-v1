@@ -1,13 +1,12 @@
 import { useEffect } from "react";
 import Title from "antd/es/typography/Title";
-import { Button } from "antd";
-import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 import { fetchQuizzes, removeQuiz } from "../features/collection/quizzesSlice";
 import { setQuizId } from "../features/question/questionsSlice";
+import { StyledDeleteIcon, StyledEditIcon, StyledIconButton } from "../components/IconButton";
 
 function Home() {
   const navigate = useNavigate();
@@ -75,17 +74,8 @@ function Home() {
                   <h3>{title}</h3>
                 </div>
                 <div className="p-2 flex justify-between gap-2 items-center">
-                  <Button
-                    className="cursor-pointer"
-                    icon={<EditTwoTone />}
-                    onClick={handleClickHomeIcon(id)}
-                  />
-                  <Button
-                    className="cursor-pointer"
-                    icon={<DeleteTwoTone />}
-                    onClick={handleDelete(id)}
-                  >
-                  </Button>
+                  <StyledIconButton icon={<StyledEditIcon />} onClick={handleClickHomeIcon(id)}/>
+                  <StyledIconButton icon={<StyledDeleteIcon />} onClick={handleDelete(id)} />
                 </div>
               </div>
               <div className="px-5 py-4">

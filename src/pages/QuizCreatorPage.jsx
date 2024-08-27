@@ -1,7 +1,7 @@
 import { Button, Dropdown } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import React, { useEffect, useState } from 'react'
-import { DeleteFilled, DeleteOutlined, EditFilled, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteFilled, EditFilled, PlusOutlined } from '@ant-design/icons';
 import Title from 'antd/es/typography/Title';
 import { useLoaderData } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -9,8 +9,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { deleteQuestion, setQuestions, setQuizId } from '../features/question/questionsSlice';
-import { questionConstantsText, questionIcons, questionIconsColor } from '../constants/question';
+import { questionConstantsText, questionIcons } from '../constants/question';
 import QuestionModal from '../components/QuestionModal';
+import { StyledDeleteIcon, StyledEditIcon, StyledIconButton } from '../components/IconButton';
 
 // The palete being used is https://colorhunt.co/palette/00a9ff89cff3a0e9ffcdf5fd
 // https://colorhunt.co/palette/756ab6ac87c5e0aed0ffe5e5
@@ -18,7 +19,11 @@ import QuestionModal from '../components/QuestionModal';
 
 // https://dribbble.com/shots/21163408-Wayyy-Questions-list
 
-const StyledButton = styled(Button)`
+const QuestionDropdownButton = styled(Dropdown)`
+  background-color: #ee9d9a;
+  font-size: 1.2em;
+  color: #f8edeb;
+  font-weight: 600;
   &:hover {
     background-color: #ee9d9a !important;
     color: #f8edeb !important;
@@ -99,7 +104,6 @@ function QuizCreatorPage() {
       label: (
         <button
           onClick={handleAddQuestion(questionConstantsText.FILL_IN_THE_BLANKS)}
-          className=''
         >
           {questionConstantsText.FILL_IN_THE_BLANKS}
         </button>
@@ -139,18 +143,19 @@ function QuizCreatorPage() {
       <div className='flex justify-between items-center'>
         <Title level={2}>Questions</Title>
         <div>
-          <Dropdown
+          <QuestionDropdownButton
             menu={{
               items: dropdownItems
             }}
+            className='flex items-center justify-center'
           >
             <Button
-              icon={<PlusOutlined />}
+              icon={<PlusOutlined className='text-lg font-bold'/>}
               type='primary'
             >
               Question
             </Button>
-          </Dropdown>
+          </QuestionDropdownButton>
         </div>
       </div>
       <div className='
@@ -180,10 +185,8 @@ function QuizCreatorPage() {
                     text-2xl
                     inline-block
                     rounded-[5px]
+                    bg-[#c9d4ff]
                   `}
-                    style={{
-                      backgroundColor: questionIconsColor[type]
-                    }}
                   >
                     <img 
                       className='rounded-[5px]'
@@ -192,16 +195,8 @@ function QuizCreatorPage() {
                     />
                   </span>
                   <div className="p-2 flex justify-between gap-2 items-center">
-                    <StyledButton
-                      className="bg-[#f4978e] cursor-pointer"
-                      icon={<EditFilled className='text-[#f8edeb] hover:text-[#ffdab9]'/>}
-                      onClick={handleEditQuestion(id)}
-                    />
-                    <StyledButton
-                      className="cursor-pointer bg-[#f4978e]"
-                      icon={<DeleteFilled className='text-[#f8edeb] hover:text-[#ffdab9]' />}
-                      onClick={handleDeleteQuestion(id)}
-                    />
+                    <StyledIconButton icon={<StyledEditIcon/>} onClick={handleEditQuestion(id)}/>
+                    <StyledIconButton icon={<StyledDeleteIcon />} onClick={handleDeleteQuestion(id)}/>
                   </div>
                 </div>
                 <h4 className='
