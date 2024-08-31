@@ -57,11 +57,16 @@ export const createQuizApi = async (newQuizzProperties) => {
 export const removeQuizApi = async (id) => {
   const quizRef = doc(db, 'quizzes', id);
   try {
+    const q = query(collection(db, 'questions'), where('quizId', '==', id));
+    const querySnapshot = await getDocs(q);
     const batch = writeBatch(db);
-    batch.delete(quizRef);
+    querySnapshot.forEach(async (questionDoc) => {
+      batch.delete(doc(db, 'questions', questionDoc.id));
+    });
+    batch.delete(quizRef)
     await batch.commit();
   } catch (error) {
-    
+    return error;
   }
   return quizRef.id
 };
