@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 import { fetchQuizzes, removeQuiz } from "../features/collection/quizzesSlice";
 import { setQuizId } from "../features/question/questionsSlice";
-import { StyledDeleteIcon, StyledEditIcon, StyledIconButton } from "../components/IconButton";
+import { StyledDeleteIcon, StyledEditIcon, StyledIconButton, StyledPlayIcon } from "../components/IconButton";
 
 function Home() {
   const navigate = useNavigate();
@@ -24,6 +24,13 @@ function Home() {
     return () => {
       dispatch(setQuizId(quizId));
       navigate(`/quizzes/${quizId}/edit`);
+    };
+  };
+
+  const handleClickPlayIcon = (quizId) => {
+    return () => {
+      dispatch(setQuizId(quizId));
+      navigate(`/quizzes/${quizId}/practice`);
     };
   };
 
@@ -76,6 +83,7 @@ function Home() {
                 <div className="p-2 flex justify-between gap-2 items-center">
                   <StyledIconButton icon={<StyledEditIcon />} onClick={handleClickHomeIcon(id)}/>
                   <StyledIconButton icon={<StyledDeleteIcon />} onClick={handleDelete(id)} />
+                  <StyledIconButton icon={<StyledPlayIcon />} onClick={handleClickPlayIcon(id)} />
                 </div>
               </div>
               <div className="px-5 py-4">

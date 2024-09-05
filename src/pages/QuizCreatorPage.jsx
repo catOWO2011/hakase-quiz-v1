@@ -1,7 +1,7 @@
 import { Button, Dropdown } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import React, { useEffect, useState } from 'react'
-import { DeleteFilled, EditFilled, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import Title from 'antd/es/typography/Title';
 import { useLoaderData } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -40,7 +40,7 @@ function QuizCreatorPage() {
   useEffect(() => {
     dispatch(setQuizId(quizData.id));
     dispatch(setQuestions(quizData.questions));
-  }, [dispatch, quizData.id, quizData.questions])
+  }, [dispatch, quizData.id, quizData.questions]);
 
   const questions = useSelector(state => state.questions.items);
   
@@ -168,6 +168,7 @@ function QuizCreatorPage() {
           questions.map(
             ({ id, type }, number) => 
               <div key={id} className='
+                bg-[#fcd5ce]
                 p-4 
                 rounded-[5px]
                 shadow-[5px_5px_20px_rgba(0,0,0,0.1)]

@@ -1,4 +1,4 @@
-import { DeleteFilled, EditFilled } from "@ant-design/icons";
+import { DeleteFilled, EditFilled, PlayCircleFilled } from "@ant-design/icons";
 import { Button } from "antd";
 import styled from "styled-components";
 
@@ -21,6 +21,13 @@ export const StyledEditIcon = styled(EditFilled)`
 `;
 
 export const StyledDeleteIcon = styled(DeleteFilled)`
+  color: #f8edeb;
+  &:hover {
+    color: #ffdab9;
+  }
+`;
+
+export const StyledPlayIcon = styled(PlayCircleFilled)`
   color: #f8edeb;
   &:hover {
     color: #ffdab9;

@@ -31,8 +31,11 @@ const InputOption = ({ optionText: inputText, type, removeOption, handleEditOpti
   }, []);
 
   const handleInputChange = ({ target: { name, value } }) => {
-    setInputValue(value)
-    handleEditOption({ [name]: value });
+    setInputValue(value);
+    handleEditOption({
+      [name]: value,
+      inputWidth: inputWidth
+    });
   };
 
   return (

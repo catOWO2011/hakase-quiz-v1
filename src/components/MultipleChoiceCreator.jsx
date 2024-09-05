@@ -67,11 +67,11 @@ const OptionCollectionInput = ({ _, onChange, initialOptions }) => {
   };
 
   const handleEditOption = (key) => {
-    return ({ newProps }) => {
+    return (newProps) => {
       const oldOptionIdx = options.findIndex(({id}) => key === id);
       options[oldOptionIdx] = {
         ...options[oldOptionIdx],
-        ...newProps
+        ...newProps,
       };
       setOptions([...options]);
     };
