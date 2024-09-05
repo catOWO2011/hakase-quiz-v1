@@ -29,7 +29,7 @@ const RadioOption = ({ className, children, checked, optionText, ...props }) => 
   );
 };
 
-const OptionCollectionInput = ({_, onChange, options, value }) => {
+const OptionCollectionInput = ({_, onChange, options }) => {
   const [answers, setAnswers] =  useState({});
   const defaultSelectedId = Object.keys(answers).length > 0 ? Object.keys(answers)[0] : '';
 
