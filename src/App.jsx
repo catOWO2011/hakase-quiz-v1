@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import QuizCreatorPage from "./pages/QuizCreatorPage";
 import { quizLoader } from "./routes/quiz";
 import QuizPractice from "./pages/QuizPractice";
+import AuthenticationPage from "./pages/AuthenticationPage";
 
 const router = createBrowserRouter([
   {
@@ -12,6 +13,10 @@ const router = createBrowserRouter([
     element: <AppLayout/>,
     children: [
       { index: true, element: <Home /> },
+      {
+        path: 'auth',
+        element: <AuthenticationPage />
+      },
       { 
         path: 'quizzes/:quizId/edit',
         element: <QuizCreatorPage />,
