@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 
 import { createQuiz } from "../features/collection/quizzesSlice";
 import { questionConstantsText, questionIcons } from "../constants/question";
-import styled from "styled-components";
+import { signInWithGooglePopup } from "../utils/firebase.utils";
 
 const Header = () => {
   const onMenuClick = () => {
@@ -31,6 +31,11 @@ const Header = () => {
     setIsModalOpen(false);
     form.resetFields();
     navigate(`/quizzes/${quizId}/edit`);
+  };
+
+  const logGoogleUser = async () => {
+    const response = await signInWithGooglePopup();
+    console.log(response);
   };
 
   return (
@@ -89,6 +94,9 @@ const Header = () => {
             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
               <button className="rounded-md bg-[#ffe6e6] px-3 py-2 text-sm font-medium text-[#ad88c6]" onClick={onMenuClick}>
                 New Quiz
+              </button>
+              <button onClick={logGoogleUser}>
+                Sign in with Google Popup
               </button>
               {/* <button type="button" class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                 <span class="absolute -inset-1.5"></span>
