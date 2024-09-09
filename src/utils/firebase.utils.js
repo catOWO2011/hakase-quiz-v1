@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth"; 
 import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore, query, setDoc, where, writeBatch } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -14,6 +15,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
+
+const auth = getAuth();
+
+export const signInUserAuthWithEmailAndPassword = async (email, password) => {
+  if (!email || !password)
+    return
+  return await signInWithEmailAndPassword(auth, email, password);
+};
 
 const getAllDocuments = async (docName) => {
   const docs = [];

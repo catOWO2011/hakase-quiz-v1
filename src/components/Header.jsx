@@ -6,16 +6,38 @@ import { useDispatch } from "react-redux";
 import { createQuiz } from "../features/collection/quizzesSlice";
 import { questionConstantsText, questionIcons } from "../constants/question";
 import styled from "styled-components";
+import { Cookies } from "react-cookie";
+
+const HeaderButton = ({ children, action }) => {
+  return (
+    <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+      <button
+        className="rounded-md bg-[#ffe6e6] px-3 py-2 text-sm font-medium text-[#ad88c6]"
+        onClick={action}
+      >
+        {children}
+      </button>
+    </div>
+  );
+};
+
+const cookies = new Cookies();
 
 const Header = () => {
-  const onMenuClick = () => {
-    showModal();
-  };
-
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userCookie = cookies.get("user");
+
+  const onMenuClick = () => {
+    showModal();
+  };
+
+  const onSignOutClick = () => {
+    cookies.remove("user");
+    navigate("/auth");
+  };
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -35,8 +57,7 @@ const Header = () => {
 
   return (
     <>
-      {
-        isModalOpen && 
+      {isModalOpen && (
         <Modal
           open={isModalOpen}
           onCancel={handleCancel}
@@ -46,16 +67,13 @@ const Header = () => {
             </Button>,
           ]}
         >
-          <Form 
-            form={form}
-            className="mt-8"
-          >
+          <Form form={form} className="mt-8">
             <Form.Item label="Quiz Name" name="title">
               <Input />
             </Form.Item>
           </Form>
         </Modal>
-      }
+      )}
       <nav className="bg-[#7469B6]">
         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
           <div className="relative flex h-16 items-center justify-between">
@@ -74,31 +92,47 @@ const Header = () => {
             </div>
             <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
               <div className="flex flex-shrink-0 items-center justify-center">
-                <img className="h-8 w-auto" src={questionIcons[questionConstantsText.CREATE_NEW_QUIZ]} alt="Your Company"/>
+                <img
+                  className="h-8 w-auto"
+                  src={questionIcons[questionConstantsText.CREATE_NEW_QUIZ]}
+                  alt="Your Company"
+                />
               </div>
-              <div className="hidden sm:ml-6 sm:block">
-                <div className="flex space-x-4">
-                  {/* <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" --> */}
-                  <Link className="rounded-md bg-[#AD88C6] px-3 py-2 text-sm font-medium text-white" aria-current="page" to={'/'}>Dashboard</Link>
-                  {/* <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Team</a>
+              {userCookie && (
+                <div className="hidden sm:ml-6 sm:block">
+                  <div className="flex space-x-4">
+                    {/* <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" --> */}
+                    <Link
+                      className="rounded-md bg-[#AD88C6] px-3 py-2 text-sm font-medium text-white"
+                      aria-current="page"
+                      to={"/"}
+                    >
+                      Dashboard
+                    </Link>
+                    {/* <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Team</a>
                   <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Projects</a>
                   <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Calendar</a> */}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
-            <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-              <button className="rounded-md bg-[#ffe6e6] px-3 py-2 text-sm font-medium text-[#ad88c6]" onClick={onMenuClick}>
-                New Quiz
-              </button>
-              {/* <button type="button" class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+            {userCookie && (
+              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                <button
+                  className="rounded-md bg-[#ffe6e6] px-3 py-2 text-sm font-medium text-[#ad88c6]"
+                  onClick={onMenuClick}
+                >
+                  New Quiz
+                </button>
+                {/* <button type="button" class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                 <span class="absolute -inset-1.5"></span>
                 <span class="sr-only">View notifications</span>
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                 </svg>
               </button> */}
-              {/* <!-- Profile dropdown --> */}
-              {/* <div class="relative ml-3">
+                {/* <!-- Profile dropdown --> */}
+                {/* <div class="relative ml-3">
                 <div>
                   <button type="button" class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                     <span class="absolute -inset-1.5"></span>
@@ -112,17 +146,51 @@ const Header = () => {
                   <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
                 </div>
               </div> */}
-            </div>
+              </div>
+            )}
+            {/* <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              <button
+                className="rounded-md bg-[#ffe6e6] px-3 py-2 text-sm font-medium text-[#ad88c6]"
+                onClick={onMenuClick}
+              >
+                Sign In
+              </button>
+            </div> */}
+            {!userCookie && <HeaderButton>Sign In</HeaderButton>}
+            {userCookie && (
+              <HeaderButton action={onSignOutClick}>Log out</HeaderButton>
+            )}
           </div>
         </div>
         {/* <!-- Mobile menu, show/hide based on menu state. --> */}
         <div className="sm:hidden" id="mobile-menu">
           <div className="space-y-1 px-2 pb-3 pt-2">
             {/* <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" --> */}
-            <a href="#" className="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white" aria-current="page">Dashboard</a>
-            <a href="#" className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Team</a>
-            <a href="#" className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Projects</a>
-            <a href="#" className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Calendar</a>
+            <a
+              href="#"
+              className="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white"
+              aria-current="page"
+            >
+              Dashboard
+            </a>
+            <a
+              href="#"
+              className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+            >
+              Team
+            </a>
+            <a
+              href="#"
+              className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+            >
+              Projects
+            </a>
+            <a
+              href="#"
+              className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+            >
+              Calendar
+            </a>
           </div>
         </div>
       </nav>

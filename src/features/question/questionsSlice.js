@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
+
 import {
   createQuestionApi,
   deleteQuestionApi,
   editQuestionApi,
 } from "../../utils/firebase.utils";
-import { toast } from "react-toastify";
 
 export const addQuestion = createAsyncThunk(
   "questions/addQuestion",
