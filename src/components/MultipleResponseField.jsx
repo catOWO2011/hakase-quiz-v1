@@ -1,30 +1,67 @@
 import { Checkbox, Col, Form, Row, Space } from "antd";
-import React from "react";
+import React, { useState } from "react";
+import { RiCheckboxBlankLine, RiCheckboxFill } from "react-icons/ri";
+import styled from "styled-components";
+
+const StyledCheckbox = styled(Checkbox)`
+.ant-checkbox-inner {
+  display: none;
+}
+`;
 
 const OptionCollectionInput = ({ onChange, options }) => {
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const handleOnCheckOption = (selectedIds) => {
     const newAnswers = {};
     for (const selectedId of selectedIds) {
-      newAnswers[selectedId] = options.find(({id}) => id === selectedId).optionText;
+      newAnswers[selectedId] = options.find(
+        ({ id }) => id === selectedId
+      ).optionText;
     }
     onChange(newAnswers);
+    setSelectedIds([...selectedIds]);
   };
 
   return (
     <div>
       <Space direction="vertical">
-        <Checkbox.Group style={{ width: "100%" }} onChange={handleOnCheckOption}>
-          <Row gutter={[8,8]}>
+        <Checkbox.Group
+          style={{ width: "100%" }}
+          onChange={handleOnCheckOption}
+        >
+          <Row gutter={[8, 8]}>
             {options.map(({ id, optionText }) => (
               <Col span={24} key={id}>
-                <Checkbox value={id} name="isCorrect">
-                  <div>
-                    <span className="text-base font-semibold">
-                      {optionText}
-                    </span>
+                <StyledCheckbox value={id} name="isCorrect">
+                  <div className="flex items-center justify-center">
+                    <div>
+                      {!selectedIds.includes(id) && (
+                        <RiCheckboxBlankLine
+                          className="cursor-pointer"
+                          size={35}
+                          color="#7469b6"
+                        />
+                      )}
+                      {selectedIds.includes(id) && (
+                        <RiCheckboxFill
+                          size={35}
+                          className="cursor-pointer"
+                          color="#7469b6"
+                        />
+                      )}
+                    </div>
+                    <div
+                      className={`ml-4 p-4 ${
+                        selectedIds.includes(id) ? "rounded-md border-2 border-[#7469b6]" : ""
+                      }`}
+                    >
+                      <div className="text-base font-semibold">
+                        {optionText}
+                      </div>
+                    </div>
                   </div>
-                </Checkbox>
+                </StyledCheckbox>
               </Col>
             ))}
           </Row>
@@ -42,4 +79,4 @@ export default function MultipleResponseField({ question }) {
       <OptionCollectionInput options={options} />
     </Form.Item>
   );
-};
+}
