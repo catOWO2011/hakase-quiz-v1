@@ -7,6 +7,14 @@ import { toast } from "react-toastify";
 import { fetchQuizzes, removeQuiz } from "../features/collection/quizzesSlice";
 import { setQuizId } from "../features/question/questionsSlice";
 import { StyledDeleteIcon, StyledEditIcon, StyledIconButton, StyledPlayIcon } from "../components/IconButton";
+import styled from "styled-components";
+
+const StyledQuizItem = styled.article`
+  transition: all 0.2s;
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
 
 function Home() {
   const navigate = useNavigate();
@@ -67,7 +75,7 @@ function Home() {
       <div className="grid grid-cols-[repeat(auto-fit,_15rem)] gap-6">
         {
           quizzes.map(({ id, title }) =>
-            <article 
+            <StyledQuizItem 
               className="
                 flex
                 flex-col
@@ -89,7 +97,7 @@ function Home() {
               <div className="px-5 py-4">
                 {/* Description */}
               </div>
-            </article>
+            </StyledQuizItem>
           )
         }
       </div>
