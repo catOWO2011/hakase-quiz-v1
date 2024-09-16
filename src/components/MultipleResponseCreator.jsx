@@ -3,16 +3,17 @@ import { Input, Form, Button, Checkbox, Alert } from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
 import TextArea from 'antd/es/input/TextArea';
 import { questionConstantsText } from '../constants/question';
+import MarkdownInput from './MarkdownInput';
 
-const Option = ({ handleEditOption, optionText, handleDeleteOption, handleUpdateOptions, isCorrect }) => {
+const Option = ({ optionRef, optionText, handleDeleteOption, handleUpdateOptions, isCorrect }) => {
 
   const handleOnCheck = ({ target: { name, checked } }) => {
-    handleEditOption()[name] = checked;
+    optionRef[name] = checked;
     handleUpdateOptions();
   };
 
-  const handleTextChange = ({target: { name, value }}) => {
-    handleEditOption()[name] = value;
+  const handleTextChange = (newValue) => {
+    optionRef['optionText'] = newValue,
     handleUpdateOptions();
   };
 
@@ -27,12 +28,9 @@ const Option = ({ handleEditOption, optionText, handleDeleteOption, handleUpdate
       <div
         className='w-full mx-4'
       >
-        <Input
-          className='ml-2 mr-2'
-          name='optionText'
-          defaultValue={optionText}
+        <MarkdownInput
+          initialValue={optionText}
           onChange={handleTextChange}
-          required
         />
       </div>
       <Button
@@ -59,11 +57,8 @@ const OptionCollectionInput = ({ _, onChange, initialOptions }) => {
     ]);
   };
 
-  const handleEditOption = (optionId) => {
-    return () => {
-      const option = options.find(({id}) =>  id === optionId);
-      return option;
-    };
+  const getOptionRef = (optionId) => {
+    return options.find(({id}) =>  id === optionId);
   };
 
   const handleDeleteOption = (optionId) => {
@@ -95,7 +90,7 @@ const OptionCollectionInput = ({ _, onChange, initialOptions }) => {
               <li key={id}>
                 <Option
                   {...otherProps}
-                  handleEditOption={handleEditOption(id)}
+                  optionRef={getOptionRef(id)}
                   handleDeleteOption={handleDeleteOption(id)}
                   handleUpdateOptions={handleUpdateOptions}
                 />

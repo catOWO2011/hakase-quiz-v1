@@ -1,7 +1,10 @@
 import { Checkbox, Col, Form, Row, Space } from "antd";
 import React, { useState } from "react";
 import { RiCheckboxBlankLine, RiCheckboxFill } from "react-icons/ri";
+import Markdown from "react-markdown";
 import styled from "styled-components";
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 
 const StyledCheckbox = styled(Checkbox)`
 .ant-checkbox-inner {
@@ -56,9 +59,9 @@ const OptionCollectionInput = ({ onChange, options }) => {
                         selectedIds.includes(id) ? "rounded-md border-2 border-[#7469b6]" : ""
                       }`}
                     >
-                      <div className="text-base font-semibold">
-                        {optionText}
-                      </div>
+                      <Markdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
+                        { optionText }
+                      </Markdown>
                     </div>
                   </div>
                 </StyledCheckbox>

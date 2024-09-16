@@ -78,8 +78,7 @@ function Home() {
   useEffect(() => {
     ScrollReveal().reveal(quizListRef.current.children, {
       duration: 1000,
-      interval: 300,
-      delay: 300
+      interval: 300
     });
     dispatch(addQuizzes(quizzes));
   }, [dispatch, quizzes]);
