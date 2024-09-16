@@ -3,6 +3,8 @@ import { useRef, useState } from "react";
 import { RiCheckboxBlankCircleLine, RiCheckboxCircleFill } from "react-icons/ri";
 import Markdown from "react-markdown";
 import styled from "styled-components";
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 
 const RadioOption = ({ className, children, checked, optionText, ...props }) => {
   const radioRef = useRef(null);
@@ -24,7 +26,7 @@ const RadioOption = ({ className, children, checked, optionText, ...props }) => 
           </div>
           <div className={`ml-4 p-4 ${checked ? 'rounded-md border-2 border-[#7469b6]' : ''}`}>
             <div className="text-base font-semibold">
-              <Markdown>
+              <Markdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
                 { optionText }
               </Markdown>
             </div>
