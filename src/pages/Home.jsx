@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import ScrollReveal from "scrollreveal";
 
-import { removeQuiz } from "../features/collection/quizzesSlice";
+import { addQuizzes, removeQuiz } from "../features/collection/quizzesSlice";
 import { setQuizId } from "../features/question/questionsSlice";
 import {
   StyledDeleteIcon,
@@ -77,17 +77,18 @@ function Home() {
 
   useEffect(() => {
     ScrollReveal().reveal(quizListRef.current.children, {
-      // duration: 1000,
+      duration: 1000,
       interval: 300,
-      useDelay: 'onload',
-      reset: true,
-      delay: 300,
+      delay: 300
     });
-  }, []);
+    dispatch(addQuizzes(quizzes));
+  }, [dispatch, quizzes]);
 
-  // useEffect(() => {
-  //   setQuizzesCollection([...quizzesOnRedux]);
-  // }, [quizzesOnRedux]);
+  useEffect(() => {
+    if (quizzesOnRedux.length > 0) {
+      setQuizzesCollection([...quizzesOnRedux]);
+    }
+  }, [quizzesOnRedux]);
 
   const handleClickHomeIcon = (quizId) => {
     return () => {
@@ -128,8 +129,8 @@ function Home() {
   };
 
   return (
-    <div className="w-full text-center">
-      <Title>Quizzes</Title>
+    <div className="w-full text-center px-8">
+      <Title className="font-[Montserrat] custom-title" >Quizzes</Title>
       <div
         className="grid grid-cols-[repeat(auto-fit,_15rem)] gap-6"
         ref={quizListRef}

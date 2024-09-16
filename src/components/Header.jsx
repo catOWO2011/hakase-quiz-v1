@@ -125,7 +125,7 @@ const Header = () => {
           <>
             <StyledDDTooogle onClick={onClickDashboard}>Dashboard</StyledDDTooogle>
             <StyledDDTooogle onClick={onMenuClick}>
-              <RiStickyNoteAddFill size={30} />
+              <RiStickyNoteAddFill size={25} />
               <span>Create a new Quiz</span>
             </StyledDDTooogle>
             <StyledDDTooogle onClick={onSignOutClick}>Logout</StyledDDTooogle>

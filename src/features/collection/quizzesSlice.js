@@ -39,6 +39,9 @@ const quizzesSlice = createSlice({
     addQuiz(state, action) {
       state.items.push(action.payload);
     },
+    addQuizzes(state, action) {
+      state.items = [...action.payload];
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -51,7 +54,7 @@ const quizzesSlice = createSlice({
   },
 });
 
-export const { addQuiz } = quizzesSlice.actions;
+export const { addQuiz, addQuizzes } = quizzesSlice.actions;
 
 export default quizzesSlice.reducer;
 
