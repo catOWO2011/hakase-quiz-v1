@@ -77,6 +77,7 @@ export default function FillInBlankField({ question }) {
   return (
     <Form.Item
       name="answers"
+      initialValue={{}}
     >
       <OptionInputCollection initialOptions={ options }/>
     </Form.Item>

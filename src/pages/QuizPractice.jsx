@@ -75,16 +75,17 @@ export default function QuizPractice() {
 
   const onFinish = async (values) => {
     const correctOptions = JSON.parse(questions[currentIndexQuestion].options)
-      .filter(({ isCorrect }) => isCorrect)
-      .map(({ id, optionText }) => ({ id, optionText }));
+    .filter(({ isCorrect }) => isCorrect)
+    .map(({ id, optionText }) => ({ id, optionText }));
     setCorrect(evaluate(correctOptions, values.answers));
     setIndexButton((prevIndex) => prevIndex + 1);
   };
 
-  const handleOnClick = () => {
+  const handleOnNext = () => {
     setIndexButton((prevIndex) => prevIndex + 1);
     setCurrentPercent((prevPercent) => prevPercent + step);
     setCurrentIndexQuestion((prevIndex) => prevIndex + 1);
+    form.resetFields();
   };
 
   return (
@@ -133,7 +134,7 @@ export default function QuizPractice() {
               )}
               {indexButton % 2 != 0 && (
                 <StyledButton
-                  onClick={handleOnClick}
+                  onClick={handleOnNext}
                   className="
                     text-[1.5em]
                     bg-[#514881]

@@ -78,7 +78,9 @@ export default function MultipleResponseField({ question }) {
   const options = JSON.parse(question.options);
 
   return (
-    <Form.Item name="answers">
+    <Form.Item name="answers"
+      initialValue={{}}
+    >
       <OptionCollectionInput options={options} />
     </Form.Item>
   );
