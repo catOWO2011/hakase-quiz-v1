@@ -129,6 +129,16 @@ function QuizCreatorPage() {
           {questionConstantsText.MULTIPLE_RESPONSE}
         </button>
       )
+    },
+    {
+      key: '4',
+      label: (
+        <button
+          onClick={handleAddQuestion(questionConstantsText.CODE_ANSWER)}
+        >
+          {questionConstantsText.CODE_ANSWER}
+        </button>
+      )
     }
   ];
 

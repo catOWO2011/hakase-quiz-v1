@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import FillBlankCreator from "./FillBlankCreator";
 import MultipleChoiceCreator from "./MultipleChoiceCreator";
 import MultipleResponseCreator from "./MultipleResponseCreator";
+import CodeAnswer from "./CodeAnswerCreator";
 import { addQuestion, editQuestion } from "../features/question/questionsSlice";
 
 const getQuestionCreatorComponent = (question) => {
@@ -19,6 +20,9 @@ const getQuestionCreatorComponent = (question) => {
       break;
     case questionConstantsText.MULTIPLE_RESPONSE:
       component = <MultipleResponseCreator question={question}/>;
+      break;
+    case questionConstantsText.CODE_ANSWER:
+      component = <CodeAnswer question={question}/>;
       break;
   }
   return component;
