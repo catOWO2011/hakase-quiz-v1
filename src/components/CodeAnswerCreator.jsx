@@ -1,30 +1,14 @@
 import { Flex, Form, Input, Select } from "antd";
 import ReactCodeMirror from "@uiw/react-codemirror";
-import { javascript } from '@codemirror/lang-javascript';
-import { java } from "@codemirror/lang-java";
-import { python } from "@codemirror/lang-python";
-import { PostgreSQL, sql } from "@codemirror/lang-sql";
 import { useCallback, useState } from "react";
 import { materialDark } from '@uiw/codemirror-theme-material';
 
 import MarkdownInput from "./MarkdownInput";
 import { questionConstantsText } from "../constants/question";
-
-const Languages = {
-  JAVASCRIPT: 'JavaScript',
-  JAVA: 'Java',
-  POSTGRESQL: 'PostgreSQL',
-  PYTHON: 'Python'
-};
-
-const EXTENSIONS = {};
-EXTENSIONS[`${Languages.JAVASCRIPT}`] = javascript({ jsx: true });
-EXTENSIONS[`${Languages.JAVA}`] = java();
-EXTENSIONS[`${Languages.POSTGRESQL}`] = sql({ dialect: PostgreSQL });
-EXTENSIONS[`${Languages.PYTHON}`] = python();
+import { EXTENSIONS, Languages } from "../constants/codeMirror";
 
 const CodeInput = ({ onChange, optionId, initialOption = {
-  value: '',
+  optionText: '',
   language: Languages.JAVASCRIPT
 } }) => {
   const [value, setValue] = useState(initialOption.optionText);

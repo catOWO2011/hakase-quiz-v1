@@ -2,6 +2,8 @@ import { Button, Flex, Form, Progress } from "antd";
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import styled from "styled-components";
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 import AceEditor from "react-ace";
 import "ace-builds/src-min-noconflict/ext-language_tools";
 import "ace-builds/src-min-noconflict/mode-java";
@@ -14,6 +16,8 @@ import MultipleChoiceField from "../components/MultipleChoiceField";
 import { RiCheckboxCircleLine, RiCloseCircleLine } from "react-icons/ri";
 import MultipleResponseField from "../components/MultipleResponseField";
 import MarkdownInput from "../components/MarkdownInput";
+import CodeAnswerField from "../components/CodeAnswerField";
+import Markdown from "react-markdown";
 
 const StyledButton = styled(Button)`
   &:hover {
@@ -44,6 +48,9 @@ export default function QuizPractice() {
       [`${questionConstantsText.MULTIPLE_RESPONSE}`]: (
         <MultipleResponseField question={question} />
       ),
+      [`${questionConstantsText.CODE_ANSWER}`]: (
+        <CodeAnswerField question={question} />
+      )
     };
 
     return fields[type];
@@ -96,9 +103,9 @@ export default function QuizPractice() {
       {currentIndexQuestion < totalQuestions &&
         questions[currentIndexQuestion].text && (
           <Flex className="p-4 bg-[#FBF0B2] rounded-md">
-            <span className="text-xl">
-              {questions[currentIndexQuestion].text}
-            </span>
+            <Markdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
+              { questions[currentIndexQuestion].text }
+            </Markdown>
           </Flex>
         )}
       <Form
@@ -108,7 +115,7 @@ export default function QuizPractice() {
       >
         {currentIndexQuestion < totalQuestions && (
           <>
-            <div className="flex justify-center m-auto">
+            <div className="flex justify-center m-auto w-full">
               {getQuestionField(
                 questions[currentIndexQuestion].type,
                 questions[currentIndexQuestion]
