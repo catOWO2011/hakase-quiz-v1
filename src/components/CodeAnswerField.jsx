@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { EXTENSIONS } from "../constants/codeMirror";
 
 const CodeInputField = ({ onChange, option }) => {
-  const [value, setValue] = useState(option.optionText);
+  const [value, setValue] = useState('');
 
   const onChangeCode = useCallback((val) => {
     setValue(val);
