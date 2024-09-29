@@ -1,4 +1,4 @@
-import { Button, Dropdown } from 'antd';
+import { Button, Dropdown, Space } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import React, { useEffect, useState } from 'react'
 import { PlusOutlined } from '@ant-design/icons';
@@ -143,27 +143,29 @@ function QuizCreatorPage() {
   ];
 
   return (
-    <Content>
+    <Content className='px-8'>
       {
         isModalOpen &&
         <QuestionModal
           {...modalData}
         />
       }
-      <div className='flex justify-between items-center'>
-        <Title level={2}>Questions</Title>
+      <div className='w-full text-center'>
+        <Title className="font-[Montserrat] custom-title" >Questions</Title>
         <div>
           <QuestionDropdownButton
             menu={{
               items: dropdownItems
             }}
-            className='flex items-center justify-center'
+            className='flex items-center justify-center p-5'
           >
             <Button
-              icon={<PlusOutlined className='text-lg font-bold'/>}
               type='primary'
             >
-              Question
+              <Space>
+                Button
+                <PlusOutlined className='text-lg font-bold'/>
+              </Space>
             </Button>
           </QuestionDropdownButton>
         </div>
