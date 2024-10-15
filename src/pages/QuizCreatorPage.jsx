@@ -163,7 +163,7 @@ function QuizCreatorPage() {
               type='primary'
             >
               <Space>
-                Button
+                Add New Question
                 <PlusOutlined className='text-lg font-bold'/>
               </Space>
             </Button>
