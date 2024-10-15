@@ -91,7 +91,7 @@ export default function CodeAnswer({ question }) {
       </Form.Item>
       <Form.Item
         name="text"
-        initialValue={''}
+        initialValue={question.text ? question.text : ''}
         rules={[
           {
             required: true,
@@ -108,6 +108,7 @@ export default function CodeAnswer({ question }) {
             required: true
           }
         ]}
+        initialValue={question.options || ""}
       >
         <CodeInput
           {...codeOptions}
