@@ -1,40 +1,53 @@
 import { Form, Radio, Space } from "antd";
 import { useRef, useState } from "react";
 import { RiCheckboxBlankCircleLine, RiCheckboxCircleFill } from "react-icons/ri";
-import Markdown from "react-markdown";
 import styled from "styled-components";
-import remarkGfm from 'remark-gfm';
-import rehypeRaw from 'rehype-raw';
+import MDEditor from "@uiw/react-md-editor";
 
 const RadioOption = ({ className, children, checked, optionText, ...props }) => {
   const radioRef = useRef(null);
 
   return (
-    <Radio {...props} className={className} ref={radioRef} >
-        <div className="flex items-center justify-center">
-          <div>
-            { checked === false && <RiCheckboxBlankCircleLine
-              className="cursor-pointer"
-              size={35}
-              color="#7469b6"
-            /> }
-            { checked === true && <RiCheckboxCircleFill
-              size={35}
-              className="cursor-pointer"
-              color="#7469b6"
-            /> }
-          </div>
-          <div className={`ml-4 p-4 ${checked ? 'rounded-md border-2 border-[#7469b6]' : ''}`}>
-            <div className="text-base font-semibold">
-              <Markdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
-                { optionText }
-              </Markdown>
-            </div>
+    <Radio
+      {...props}
+      className={className}
+      ref={radioRef}
+    >
+      <div className="flex items-center justify-center">
+        <div>
+          { checked === false && <RiCheckboxBlankCircleLine
+            className="cursor-pointer"
+            size={35}
+            color="#7469b6"
+          /> }
+          { checked === true && <RiCheckboxCircleFill
+            size={35}
+            className="cursor-pointer"
+            color="#7469b6"
+          /> }
+        </div>
+        <div className={`ml-4 p-4 w-full ${checked ? 'rounded-md border-2 border-[#7469b6]' : ''}`}>
+          <div className="text-base font-semibold inline">
+            <MDEditor
+              value={optionText}
+              preview="preview"
+              hideToolbar={true}
+              height={200}
+              className="w-full"
+            />
           </div>
         </div>
-      </Radio>
+      </div>
+    </Radio>
   );
 };
+
+const StyledSpace = styled(Space)`
+  width: 100%;
+  .ant-space-item .ant-radio-wrapper {
+    width: 100%;
+  }
+`;
 
 const OptionCollectionInput = ({_, onChange, options }) => {
   const [answers, setAnswers] =  useState({});
@@ -54,20 +67,24 @@ const OptionCollectionInput = ({_, onChange, options }) => {
   };
 
   return (
-    <Radio.Group value={defaultSelectedId} onChange={handleOnClickOption}>
-        <Space direction="vertical">
-          {
-            options.map(({id, optionText}) => (
-              <StyledRadio
-                key={id}
-                value={id}
-                checked={defaultSelectedId === id}
-                optionText={optionText}
-              />
-            ))
-          }
-        </Space>
-      </Radio.Group>
+    <Radio.Group
+      className="w-full"
+      value={defaultSelectedId}
+      onChange={handleOnClickOption}
+    >
+      <StyledSpace direction="vertical" className="w-full">
+        {
+          options.map(({id, optionText}) => (
+            <StyledRadio
+              key={id}
+              value={id}
+              checked={defaultSelectedId === id}
+              optionText={optionText}
+            />
+          ))
+        }
+      </StyledSpace>
+    </Radio.Group>
   );
 };
 
@@ -75,16 +92,22 @@ const StyledRadio = styled(RadioOption)`
   .ant-radio {
     display: none;
   }
+  width: 100%;
+  .ant-radio + span {
+    width: 100%;
+  }
+`;
+
+const FormItem = styled(Form.Item)`
+  width: 100%;
 `;
 
 export default function MultipleChoiceField({ question }) {
   const options = JSON.parse(question.options);
 
   return (
-    <Form.Item
-      name='answers'
-    >
+    <FormItem>
       <OptionCollectionInput options={options}/>
-    </Form.Item>
+    </FormItem>
   );
 }

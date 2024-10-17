@@ -2,22 +2,13 @@ import { Button, Flex, Form, Progress } from "antd";
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import styled from "styled-components";
-import remarkGfm from 'remark-gfm';
-import rehypeRaw from 'rehype-raw';
-import AceEditor from "react-ace";
-import "ace-builds/src-min-noconflict/ext-language_tools";
-import "ace-builds/src-min-noconflict/mode-java";
-import "ace-builds/src-noconflict/theme-github";
-ace.config.set("basePath", "/node_modules/ace-builds/src-min-noconflict");
-
 import FillInBlankField from "../components/FillInBlankField";
 import { questionConstantsText } from "../constants/question";
 import MultipleChoiceField from "../components/MultipleChoiceField";
 import { RiCheckboxCircleLine, RiCloseCircleLine } from "react-icons/ri";
 import MultipleResponseField from "../components/MultipleResponseField";
-import MarkdownInput from "../components/MarkdownInput";
 import CodeAnswerField from "../components/CodeAnswerField";
-import Markdown from "react-markdown";
+import MDEditor from "@uiw/react-md-editor";
 
 const StyledButton = styled(Button)`
   &:hover {
@@ -103,14 +94,18 @@ export default function QuizPractice() {
       {currentIndexQuestion < totalQuestions &&
         questions[currentIndexQuestion].text && (
           <Flex className="p-4 bg-[#FBF0B2] rounded-md">
-            <Markdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
-              { questions[currentIndexQuestion].text }
-            </Markdown>
+            <MDEditor
+              value={questions[currentIndexQuestion].text}
+              preview="preview"
+              hideToolbar={true}
+              height={200}
+              className="w-full"
+            />
           </Flex>
         )}
       <Form
         form={form}
-        className="h-full flex-col justify-between flex p-1"
+        className="h-full flex-col justify-between flex p-1 w-full"
         onFinish={onFinish}
       >
         {currentIndexQuestion < totalQuestions && (
@@ -179,39 +174,17 @@ export default function QuizPractice() {
           <div className="text-2xl flex flex-row items-center">
             <span className="text-[#FF8080]">
               The correct answer is:{" "}
-              {JSON.parse(questions[currentIndexQuestion].options)
-                .filter(({ isCorrect }) => isCorrect)
-                .map(({ optionText }) => optionText)
-                .join(",")}
+              { 
+                JSON.parse(questions[currentIndexQuestion].options)
+                  .filter(({ isCorrect }) => isCorrect)
+                  .map(({ optionText }) => optionText)
+                  .join(",")
+              }
             </span>
           </div>
         </div>
       )}
       <div>
-        {/* <AceEditor
-          id="editor"
-          aria-label="editor"
-          mode="java"
-          theme="github"
-          name="editor"
-          fontSize={16}
-          minLines={15}
-          maxLines={10}
-          width="100%"
-          showPrintMargin={false}
-          showGutter
-          placeholder="Write your Query here..."
-          editorProps={{ $blockScrolling: true }}
-          setOptions={{
-            enableBasicAutocompletion: true,
-            enableLiveAutocompletion: true,
-            enableSnippets: true,
-          }}
-          value={""}
-          onChange={() => {}}
-          showLineNumbers
-        /> */}
-        {/* <MarkdownInput /> */}
       </div>
     </div>
   );
