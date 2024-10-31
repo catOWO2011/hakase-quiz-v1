@@ -49,7 +49,9 @@ const StyledSpace = styled(Space)`
   }
 `;
 
-const OptionCollectionInput = ({_, onChange, options }) => {
+const OptionCollectionInput = (props) => {
+  const { onChange, options } = props;
+  
   const [answers, setAnswers] =  useState({});
   const defaultSelectedId = Object.keys(answers).length > 0 ? Object.keys(answers)[0] : '';
 
@@ -106,7 +108,10 @@ export default function MultipleChoiceField({ question }) {
   const options = JSON.parse(question.options);
 
   return (
-    <FormItem>
+    <FormItem
+      name={"answers"}
+      initialValue={{}}
+    >
       <OptionCollectionInput options={options}/>
     </FormItem>
   );
