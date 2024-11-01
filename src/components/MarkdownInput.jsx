@@ -47,7 +47,7 @@ const Code = ({ inline, children = [], className, ...props }) => {
   return <code className={className}>{children}</code>
 };
 
-export default function MarkdownInput({ onChange, height = 100, initialValue='' }) {
+export default function MarkdownInput({ onChange, height = 100, initialValue='', placeholder }) {
   const [value, setValue] = useState(initialValue);
 
   return (
@@ -59,7 +59,7 @@ export default function MarkdownInput({ onChange, height = 100, initialValue='' 
             onChange(newValue);
           }}
           textareaProps={{
-            placeholder: "Please enter Markdown text"
+            placeholder: placeholder ?? "Please enter Markdown text"
           }}
           height={height}
           value={value}

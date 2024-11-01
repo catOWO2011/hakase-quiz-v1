@@ -1,4 +1,4 @@
-import { Button, Form, Modal } from "antd";
+import { Button, Form, Modal, Switch, Typography } from "antd";
 import { questionConstantsText } from "../constants/question";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -8,6 +8,8 @@ import MultipleChoiceCreator from "./MultipleChoiceCreator";
 import MultipleResponseCreator from "./MultipleResponseCreator";
 import CodeAnswer from "./CodeAnswerCreator";
 import { addQuestion, editQuestion } from "../features/question/questionsSlice";
+import MarkdownInput from "./MarkdownInput";
+import { useState } from "react";
 
 const getQuestionCreatorComponent = (question) => {
   let component = "";
@@ -31,6 +33,7 @@ const getQuestionCreatorComponent = (question) => {
 function QuestionModal({ isOpen, setIsOpen, question }) {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const [showHintField, setShowHintField] = useState(question.hint ? true : false);
 
   const handleOnCancel = () => {
     setIsOpen(false);
@@ -92,6 +95,10 @@ function QuestionModal({ isOpen, setIsOpen, question }) {
     form.resetFields();
   };
 
+  const handleOnAddHint = async () => {
+    setShowHintField(!showHintField);
+  };
+
   return (
     <Modal
       title={question.type}
@@ -102,6 +109,22 @@ function QuestionModal({ isOpen, setIsOpen, question }) {
     >
       <Form form={form} onFinish={onFinish}>
         {getQuestionCreatorComponent(question)}
+        <div className="flex">
+          <Typography.Title  level={5} className="mr-8">Add a hint</Typography.Title>
+          <Switch checked={showHintField} onClick={handleOnAddHint} className="mb-4"/>
+        </div>
+        {
+          showHintField &&
+          <Form.Item
+            name={"hint"}
+            initialValue={question.hint ?? ''}
+          >
+            <MarkdownInput
+              initialValue={question.hint ?? ''} 
+              placeholder={'Write your hint'}
+            />
+          </Form.Item>
+        }
         <Form.Item>
           <Button type="primary" htmlType="submit">
             Submit
