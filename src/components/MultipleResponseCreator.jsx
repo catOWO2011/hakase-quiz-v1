@@ -148,6 +148,7 @@ const MultipleResponseCreator = ({ question }) => {
             message: 'At least two options are required and one needs to be true.'
           }
         ]}
+        initialValue={question.options}
       >
         <OptionCollectionInput initialOptions={JSON.parse(question.options)}/>
       </Form.Item>
