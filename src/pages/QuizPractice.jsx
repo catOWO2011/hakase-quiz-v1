@@ -24,8 +24,9 @@ export default function QuizPractice() {
   const step = 100 / totalQuestions;
   const [currentPercent, setCurrentPercent] = useState(0);
   const [currentIndexQuestion, setCurrentIndexQuestion] = useState(0);
-  const [indexButton, setIndexButton] = useState(0);
   const [correct, setCorrect] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+  const [showCheckButton, setShowCheckButton] = useState(true);
   const [form] = Form.useForm();
 
   const getQuestionField = (type, question) => {
@@ -73,42 +74,70 @@ export default function QuizPractice() {
 
   const onFinish = async (values) => {
     const correctOptions = JSON.parse(questions[currentIndexQuestion].options)
-    .filter(({ isCorrect }) => isCorrect)
-    .map(({ id, optionText }) => ({ id, optionText }));
+      .filter(({ isCorrect }) => isCorrect)
+      .map(({ id, optionText }) => ({ id, optionText }));
     setCorrect(evaluate(correctOptions, values.answers));
-    setIndexButton((prevIndex) => prevIndex + 1);
+    setShowCheckButton(false);
+    setShowHint(true);
   };
 
   const handleOnNext = () => {
-    setIndexButton((prevIndex) => prevIndex + 1);
     setCurrentPercent((prevPercent) => prevPercent + step);
     setCurrentIndexQuestion((prevIndex) => prevIndex + 1);
+    setShowCheckButton(true);
+    setShowHint(false);
     form.resetFields();
   };
+
+  const showQuestion = currentIndexQuestion < totalQuestions;
+
+  const QuestionText = ({ text }) => {
+    if (text) {
+      return (
+        <Flex className="p-4 bg-[#FBF0B2] rounded-md">
+          <MDEditor
+            value={text}
+            preview="preview"
+            hideToolbar={true}
+            height={200}
+            className="w-full"
+          />
+        </Flex>
+      );
+    }
+
+    return <></>;
+  };
+
+  const Hint = ({ hint }) => {
+    if (hint) {
+      return (
+        <Flex className="p-4 bg-[#FBF0B2] rounded-md w-full">
+          <MDEditor
+            value={hint}
+            preview="preview"
+            hideToolbar={true}
+            height={200}
+            className="w-full"
+          />
+        </Flex>
+      );
+    }
+    return <></>
+  }
 
   return (
     <div className="flex justify-between flex-col bg-[#E3DFFD] p-4 rounded-md">
       <Flex gap="small" vertical className="bg-[#e5fbd6] p-4 mb-4 rounded-md">
         <Progress percent={currentPercent} size={[, 20]} showInfo={false} />
       </Flex>
-      {currentIndexQuestion < totalQuestions &&
-        questions[currentIndexQuestion].text && (
-          <Flex className="p-4 bg-[#FBF0B2] rounded-md">
-            <MDEditor
-              value={questions[currentIndexQuestion].text}
-              preview="preview"
-              hideToolbar={true}
-              height={200}
-              className="w-full"
-            />
-          </Flex>
-        )}
+      {showQuestion && QuestionText(questions[currentIndexQuestion])}
       <Form
         form={form}
         className="h-full flex-col justify-between flex p-1 w-full"
         onFinish={onFinish}
       >
-        {currentIndexQuestion < totalQuestions && (
+        {showQuestion && (
           <>
             <div className="flex justify-center m-auto w-full">
               {getQuestionField(
@@ -117,46 +146,71 @@ export default function QuizPractice() {
               )}
             </div>
             <Form.Item className="flex justify-end">
-              {indexButton % 2 == 0 && (
+              { 
+                showCheckButton && 
                 <StyledButton
                   className="
-                    text-[1.5em]
-                    bg-[#514881]
-                    text-[#beb8eb]
-                    h-full
-                    w-full
-                    font-bold
+                      text-[1.5em]
+                      bg-[#514881]
+                      text-[#beb8eb]
+                      h-full
+                      w-full
+                      font-bold
 
-                  "
+                    "
                   type="submit"
                   htmlType="submit"
                 >
                   Check
                 </StyledButton>
-              )}
-              {indexButton % 2 != 0 && (
+              }
+              {
+                !showCheckButton &&
                 <StyledButton
                   onClick={handleOnNext}
                   className="
-                    text-[1.5em]
-                    bg-[#514881]
-                    text-[#beb8eb]
-                    h-full
-                    w-full
-                    font-bold
-                    hover:bg-[#514881]
-                  "
+                      text-[1.5em]
+                      bg-[#514881]
+                      text-[#beb8eb]
+                      h-full
+                      w-full
+                      font-bold
+                      hover:bg-[#514881]
+                    "
                   type="link"
                   htmlType="button"
                 >
                   Next
                 </StyledButton>
-              )}
+              }
             </Form.Item>
           </>
         )}
       </Form>
-      {indexButton % 2 != 0 && correct && (
+      {showHint && (
+        <div className="bg-[#e5fbd6] rounded-md flex align-middle justify-between p-2">
+          {
+            Hint(questions[currentIndexQuestion])
+          }
+        </div>
+      )}
+      {!showCheckButton && !correct && (
+        <div className="bg-[#ffe6e6] rounded-md flex align-middle justify-between p-2">
+          <div>
+            <RiCloseCircleLine size={70} color="#FF8080" />
+          </div>
+          <div className="text-2xl flex flex-row items-center">
+            <span className="text-[#FF8080]">
+              The correct answer is:{" "}
+              {JSON.parse(questions[currentIndexQuestion].options)
+                .filter(({ isCorrect }) => isCorrect)
+                .map(({ optionText }) => optionText)
+                .join(",")}
+            </span>
+          </div>
+        </div>
+      )}
+      {!showCheckButton && correct && (
         <div className="bg-[#e5fbd6] rounded-md flex align-middle justify-between p-2">
           <div>
             <RiCheckboxCircleLine size={70} color="#7eabb1" />
@@ -166,26 +220,6 @@ export default function QuizPractice() {
           </div>
         </div>
       )}
-      {indexButton % 2 != 0 && correct === false && (
-        <div className="bg-[#ffe6e6] rounded-md flex align-middle justify-between p-2">
-          <div>
-            <RiCloseCircleLine size={70} color="#FF8080" />
-          </div>
-          <div className="text-2xl flex flex-row items-center">
-            <span className="text-[#FF8080]">
-              The correct answer is:{" "}
-              { 
-                JSON.parse(questions[currentIndexQuestion].options)
-                  .filter(({ isCorrect }) => isCorrect)
-                  .map(({ optionText }) => optionText)
-                  .join(",")
-              }
-            </span>
-          </div>
-        </div>
-      )}
-      <div>
-      </div>
     </div>
   );
 }
