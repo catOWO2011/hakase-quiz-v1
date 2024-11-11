@@ -1,15 +1,17 @@
 import { Checkbox, Col, Form, Row, Space } from "antd";
 import React, { useState } from "react";
 import { RiCheckboxBlankLine, RiCheckboxFill } from "react-icons/ri";
-import Markdown from "react-markdown";
 import styled from "styled-components";
-import remarkGfm from 'remark-gfm';
-import rehypeRaw from 'rehype-raw';
+import ROMarkdown from "./ROMarkdown";
 
 const StyledCheckbox = styled(Checkbox)`
-.ant-checkbox-inner {
-  display: none;
-}
+  .ant-checkbox-inner {
+    display: none;
+  }
+  width: 100%;
+  .ant-checkbox + span {
+    width: 100%;
+  }
 `;
 
 const OptionCollectionInput = ({ onChange, options }) => {
@@ -28,40 +30,49 @@ const OptionCollectionInput = ({ onChange, options }) => {
 
   return (
     <div>
-      <Space direction="vertical">
+      <Space direction="vertical" className="w-full">
         <Checkbox.Group
           style={{ width: "100%" }}
           onChange={handleOnCheckOption}
         >
           <Row gutter={[8, 8]}>
             {options.map(({ id, optionText }) => (
-              <Col span={24} key={id}>
+              <Col span={24} key={id} >
                 <StyledCheckbox value={id} name="isCorrect">
                   <div className="flex items-center justify-center">
                     <div>
                       {!selectedIds.includes(id) && (
                         <RiCheckboxBlankLine
                           className="cursor-pointer"
-                          size={35}
-                          color="#7469b6"
+                          size={25}
+                          color="#E5D9F2"
+                          style={{
+                            color: `#E5D9F2`,
+                            backgroundColor: '#FFF'
+                          }}
                         />
                       )}
                       {selectedIds.includes(id) && (
                         <RiCheckboxFill
-                          size={35}
+                          size={25}
                           className="cursor-pointer"
-                          color="#7469b6"
+                          color="#A594F9"
+                          style={{
+                            color: `#A594F9`,
+                            backgroundColor: '#FFF'
+                          }}
                         />
                       )}
                     </div>
                     <div
-                      className={`ml-4 p-4 ${
-                        selectedIds.includes(id) ? "rounded-md border-2 border-[#7469b6]" : ""
+                      className={`m-2 w-full hover:border-[#A594F9] hover:border-2 ${
+                        selectedIds.includes(id) ? "rounded-md border-2 border-[#A594F9]" : "rounded-md border-2 border-[#F5EFFF] "
                       }`}
                     >
-                      <Markdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
-                        { optionText }
-                      </Markdown>
+                      <ROMarkdown
+                        text={optionText}
+                        id={id}
+                      />
                     </div>
                   </div>
                 </StyledCheckbox>
@@ -80,6 +91,7 @@ export default function MultipleResponseField({ question }) {
   return (
     <Form.Item name="answers"
       initialValue={{}}
+      className="w-full"
     >
       <OptionCollectionInput options={options} />
     </Form.Item>

@@ -31,13 +31,13 @@ const QuizItem = ({
                 flex-col
                 rounded-[8px]
                 [box-shadow:0_3px_3px_0_rgba(0,_0,_0,_0.05),_0_5px_15px_0_rgba(0,_0,_0,_0.05)]
-                bg-[#ffffff]
+                bg-[#E5D1FA]
                 ${className}
                 `}
       key={id}
     >
       <div className="flex items-center justify-between pt-6 pb-4 px-5">
-        <div className="flex items-center">
+        <div className="flex items-center text-[#694F8E]">
           <h3>{title}</h3>
         </div>
         <div className="p-2 flex justify-between gap-2 items-center">

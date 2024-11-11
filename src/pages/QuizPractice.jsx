@@ -1,5 +1,5 @@
 import { Button, Flex, Form, Progress } from "antd";
-import { useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import styled from "styled-components";
 import FillInBlankField from "../components/FillInBlankField";
@@ -9,6 +9,7 @@ import { RiCheckboxCircleLine, RiCloseCircleLine } from "react-icons/ri";
 import MultipleResponseField from "../components/MultipleResponseField";
 import CodeAnswerField from "../components/CodeAnswerField";
 import MDEditor from "@uiw/react-md-editor";
+import ROMarkdown from "../components/ROMarkdown";
 
 const StyledButton = styled(Button)`
   &:hover {
@@ -91,47 +92,38 @@ export default function QuizPractice() {
 
   const showQuestion = currentIndexQuestion < totalQuestions;
 
-  const QuestionText = ({ text }) => {
-    if (text) {
-      return (
-        <Flex className="p-4 bg-[#FBF0B2] rounded-md">
-          <MDEditor
-            value={text}
-            preview="preview"
-            hideToolbar={true}
-            height={200}
-            className="w-full"
-          />
-        </Flex>
-      );
-    }
-
-    return <></>;
-  };
-
   const Hint = ({ hint }) => {
     if (hint) {
       return (
-        <Flex className="p-4 bg-[#FBF0B2] rounded-md w-full">
-          <MDEditor
-            value={hint}
-            preview="preview"
-            hideToolbar={true}
-            height={200}
-            className="w-full"
-          />
-        </Flex>
+        <div className="bg-[#e5fbd6] rounded-md flex align-middle justify-between p-2">
+          <Flex className="p-4 bg-[#FBF0B2] rounded-md w-full">
+            <MDEditor
+              value={hint}
+              preview="preview"
+              hideToolbar={true}
+              height={150}
+              className="w-full"
+            />
+          </Flex>
+        </div>
       );
     }
-    return <></>
-  }
+    return <></>;
+  };
 
   return (
-    <div className="flex justify-between flex-col bg-[#E3DFFD] p-4 rounded-md">
+    <div className="flex justify-between flex-col p-4">
       <Flex gap="small" vertical className="bg-[#e5fbd6] p-4 mb-4 rounded-md">
         <Progress percent={currentPercent} size={[, 20]} showInfo={false} />
       </Flex>
-      {showQuestion && QuestionText(questions[currentIndexQuestion])}
+      {/* {showQuestion && questionz(questions[currentIndexQuestion])} */}
+      {showQuestion && 
+        <ROMarkdown
+          text={questions[currentIndexQuestion].text}
+          id={questions[currentIndexQuestion].id}
+          extraClasses={'bg-[#FBF0B2] rounded-md'}
+        />
+      }
       <Form
         form={form}
         className="h-full flex-col justify-between flex p-1 w-full"
@@ -145,9 +137,41 @@ export default function QuizPractice() {
                 questions[currentIndexQuestion]
               )}
             </div>
-            <Form.Item className="flex justify-end">
-              { 
-                showCheckButton && 
+            {/* {showHint && Hint(questions[currentIndexQuestion])} */}
+            {showHint &&
+              <ROMarkdown
+                text={questions[currentIndexQuestion].hint}
+                id={questions[currentIndexQuestion].id}
+              />
+            }
+            {!showCheckButton && !correct && (
+              <div className="bg-[#ffe6e6] rounded-md flex align-middle justify-between p-2">
+                <div>
+                  <RiCloseCircleLine size={70} color="#FF8080" />
+                </div>
+                <div className="text-2xl flex flex-row items-center">
+                  <span className="text-[#FF8080]">
+                    The correct answer is:{" "}
+                    {JSON.parse(questions[currentIndexQuestion].options)
+                      .filter(({ isCorrect }) => isCorrect)
+                      .map(({ optionText }) => optionText)
+                      .join(",")}
+                  </span>
+                </div>
+              </div>
+            )}
+            {!showCheckButton && correct && (
+              <div className="bg-[#e5fbd6] rounded-md flex align-middle justify-between p-2">
+                <div>
+                  <RiCheckboxCircleLine size={70} color="#7eabb1" />
+                </div>
+                <div className="text-2xl flex flex-row items-center">
+                  <span className="text-[#7eabb1]">Correct Answer</span>
+                </div>
+              </div>
+            )}
+            <Form.Item className="flex justify-end mt-2">
+              {showCheckButton && (
                 <StyledButton
                   className="
                       text-[1.5em]
@@ -163,9 +187,8 @@ export default function QuizPractice() {
                 >
                   Check
                 </StyledButton>
-              }
-              {
-                !showCheckButton &&
+              )}
+              {!showCheckButton && (
                 <StyledButton
                   onClick={handleOnNext}
                   className="
@@ -182,44 +205,11 @@ export default function QuizPractice() {
                 >
                   Next
                 </StyledButton>
-              }
+              )}
             </Form.Item>
           </>
         )}
       </Form>
-      {showHint && (
-        <div className="bg-[#e5fbd6] rounded-md flex align-middle justify-between p-2">
-          {
-            Hint(questions[currentIndexQuestion])
-          }
-        </div>
-      )}
-      {!showCheckButton && !correct && (
-        <div className="bg-[#ffe6e6] rounded-md flex align-middle justify-between p-2">
-          <div>
-            <RiCloseCircleLine size={70} color="#FF8080" />
-          </div>
-          <div className="text-2xl flex flex-row items-center">
-            <span className="text-[#FF8080]">
-              The correct answer is:{" "}
-              {JSON.parse(questions[currentIndexQuestion].options)
-                .filter(({ isCorrect }) => isCorrect)
-                .map(({ optionText }) => optionText)
-                .join(",")}
-            </span>
-          </div>
-        </div>
-      )}
-      {!showCheckButton && correct && (
-        <div className="bg-[#e5fbd6] rounded-md flex align-middle justify-between p-2">
-          <div>
-            <RiCheckboxCircleLine size={70} color="#7eabb1" />
-          </div>
-          <div className="text-2xl flex flex-row items-center">
-            <span className="text-[#7eabb1]">Correct Answer</span>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
