@@ -66,7 +66,7 @@ const OptionCollectionInput = ({ onChange, options }) => {
                     </div>
                     <div
                       className={`m-2 w-full hover:border-[#A594F9] hover:border-2 ${
-                        selectedIds.includes(id) ? "rounded-md border-2 border-[#A594F9]" : "rounded-md border-2 border-[#F5EFFF] "
+                        selectedIds.includes(id) ? "rounded-md border-2 border-[#A594F9]" : "rounded-md border-2 border-[#F5EFFF]"
                       }`}
                     >
                       <ROMarkdown

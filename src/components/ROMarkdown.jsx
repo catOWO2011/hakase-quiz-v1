@@ -12,7 +12,6 @@ function ROMarkdown({ text, id, extraClasses }) {
         .getElementById(markdownRef.current.container.id)
         .getElementsByClassName("wmde-markdown-color")[0].scrollHeight;
       setHeight(newHeight);
-      console.log(newHeight, 'newHeight Resize', markdownRef.current.container.id, 'id');
     }
   };
 
@@ -24,7 +23,7 @@ function ROMarkdown({ text, id, extraClasses }) {
     window.addEventListener('resize', resizeHeight);
     return () => window.removeEventListener('resize', resizeHeight);
   }, [])
-
+  
   if (text) {
     return (
       <Flex className={`w-full ${extraClasses}`}>

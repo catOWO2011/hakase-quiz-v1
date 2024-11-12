@@ -2,7 +2,7 @@ import { Form, Radio, Space } from "antd";
 import { useRef, useState } from "react";
 import { RiCheckboxBlankCircleLine, RiCheckboxCircleFill } from "react-icons/ri";
 import styled from "styled-components";
-import MDEditor from "@uiw/react-md-editor";
+import ROMarkdown from "./ROMarkdown";
 
 const RadioOption = ({ className, children, checked, optionText, ...props }) => {
   const radioRef = useRef(null);
@@ -18,22 +18,19 @@ const RadioOption = ({ className, children, checked, optionText, ...props }) => 
           { checked === false && <RiCheckboxBlankCircleLine
             className="cursor-pointer"
             size={35}
-            color="#7469b6"
+            color="#E5D9F2"
           /> }
           { checked === true && <RiCheckboxCircleFill
             size={35}
             className="cursor-pointer"
-            color="#7469b6"
+            color="#A594F9"
           /> }
         </div>
-        <div className={`ml-4 p-4 w-full ${checked ? 'rounded-md border-2 border-[#7469b6]' : ''}`}>
+        <div className={`ml-4 p-4 w-full hover:border-[#A594F9] hover:border-2 ${checked ? 'rounded-md border-2 border-[#A594F9]' : 'rounded-md border-2 border-[#F5EFFF]'}`}>
           <div className="text-base font-semibold inline">
-            <MDEditor
-              value={optionText}
-              preview="preview"
-              hideToolbar={true}
-              height={200}
-              className="w-full"
+            <ROMarkdown
+              text={optionText}
+              id={props.value}
             />
           </div>
         </div>
