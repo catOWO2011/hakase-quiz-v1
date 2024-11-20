@@ -1,13 +1,27 @@
 import { Form, Input } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const InputFieldOption = ({ inputWidth, handleOnChangeAnswerInput }) => {
+const InputFieldOption = ({ text, handleOnChangeAnswerInput }) => {
   const [inputValue, setInputValue] = useState('');
+  const [inputWidth, setInputWidth] = useState(100);
+  const measureRef = useRef(null);
 
   const handleInputChange = ({ target: { value } }) => {
     handleOnChangeAnswerInput(value);
     setInputValue(value);
   };
+
+  useEffect(() => {
+    if (measureRef.current) {
+      let newWidth = measureRef.current.offsetWidth;
+      if (newWidth === 0) {
+        newWidth += 150;
+      } else {
+        newWidth += 30;
+      }
+      setInputWidth(newWidth);
+    }
+  }, []);
 
   return (
     <div>
@@ -17,9 +31,21 @@ const InputFieldOption = ({ inputWidth, handleOnChangeAnswerInput }) => {
         onChange={handleInputChange}
         className="text-2xl"
         style={{
-          width: `${inputWidth*1.2}px`
+          width: `${inputWidth}px`,
+          fontFamily: 'Quicksand, sans-serif'
         }}
       />
+      <span 
+        ref={measureRef}
+        className="invisible fixed whitespace-pre"
+        style={{
+          fontFamily: 'inherit',
+          fontSize: 'inherit',
+          padding: '0',
+        }}
+      >
+        {text}
+      </span>
     </div>
   );
 };
@@ -51,6 +77,7 @@ const OptionInputCollection = ({_, onChange, initialOptions }) => {
                 <li key={id}>
                   <InputFieldOption
                     inputWidth={inputWidth}
+                    text={optionText}
                     handleOnChangeAnswerInput={handleOnChangeAnswerInput(id)}
                   />
                 </li>
@@ -59,7 +86,10 @@ const OptionInputCollection = ({_, onChange, initialOptions }) => {
               return (
                 <li key={id}>
                   <div className="leading-[42px]">
-                    <span>{optionText}</span>
+                    <span style={{
+                      fontFamily: 'Quicksand, sans-serif',
+                      color: '#8094ab'
+                    }}>{optionText}</span>
                   </div>
                 </li>
               );
