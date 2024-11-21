@@ -88,10 +88,10 @@ const fixQuestions = (questions) => {
       const newOptions = [];
       for (const remText of question.text.match(/_+|[^_]+/g) || []) {
         if (/^_+$/i.test(remText)) {
-          newOptions.push({ ...correctOptions[0], id: crypto.randomUUID() });
+          newOptions.push({ ...correctOptions[0], id: crypto.randomUUID(), type: "blank" });
           correctOptions.shift();
         } else {
-          newOptions.push({ optionText: remText, id: crypto.randomUUID(), isCorrect: false });
+          newOptions.push({ optionText: remText, id: crypto.randomUUID(), isCorrect: false, type: "text" });
         }
       }
       question.options = JSON.stringify(newOptions);
