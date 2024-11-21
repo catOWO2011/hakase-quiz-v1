@@ -51,11 +51,28 @@ export const getQuizzes = async () => {
   return await getAllDocuments('quizzes');
 };
 
-export const createQuizApi = async (newQuizzProperties) => {
+export const createQuizApi = async (newQuizzProperties, newQuestions = null) => {
   let newQuiz = {}
   try {
-    newQuiz = await createNewDoc('quizzes', newQuizzProperties);
+    if (newQuestions) {
+      const batch = writeBatch(db);
+      const quizCollectionRef = collection(db, 'quizzes');
+      const quizRef = doc(quizCollectionRef);
+      batch.set(quizRef, newQuizzProperties);
+      newQuestions.forEach((question) => {
+        const questionRef = doc(collection(db, 'questions'));
+        batch.set(questionRef, {
+          ...question,
+          quizId: quizRef.id
+        });
+      });
+      await batch.commit();
+      newQuiz = { id: quizRef.id };
+    } else {
+      newQuiz = await createNewDoc('quizzes', newQuizzProperties);
+    }
   } catch (error) {
+    console.error(error);
     newQuiz = {
       error
     };

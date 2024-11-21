@@ -5,6 +5,7 @@ import {
   getQuizzes,
   removeQuizApi,
 } from "../../utils/firebase.utils";
+import { questionConstantsText } from "../../constants/question";
 
 const IDLE = "idle";
 
@@ -20,6 +21,19 @@ export const removeQuiz = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       await removeQuizApi(id);
+      return id;
+    } catch (error) {
+      rejectWithValue(error.message);
+    }
+  }
+);
+
+export const createCompleteQuiz = createAsyncThunk(
+  "quizzes/createCompleteQuiz",
+  async (data, { rejectWithValue }) => {
+    try {
+      fixQuestions(data.questions);
+      const { id } = await createQuizApi(data.newQuizzProperties, data.questions);
       return id;
     } catch (error) {
       rejectWithValue(error.message);
@@ -65,4 +79,25 @@ export const createQuiz = (quiz) => {
     dispatch(quizzesSlice.actions.addQuiz(newQuiz));
     return newQuiz;
   };
+};
+
+const fixQuestions = (questions) => {
+  questions.forEach((question) => {
+    if (question.type === questionConstantsText.FILL_IN_THE_BLANKS && question.text && question.text.length > 0) {
+      const correctOptions = question.options.filter(({ isCorrect }) => isCorrect);
+      const newOptions = [];
+      for (const remText of question.text.match(/_+|[^_]+/g) || []) {
+        if (/^_+$/i.test(remText)) {
+          newOptions.push({ ...correctOptions[0], id: crypto.randomUUID() });
+          correctOptions.shift();
+        } else {
+          newOptions.push({ optionText: remText, id: crypto.randomUUID(), isCorrect: false });
+        }
+      }
+      question.options = JSON.stringify(newOptions);
+      question.text = "";
+    } else {
+      question.options = JSON.stringify(question.options.map((option) => ({ ...option, id: crypto.randomUUID() })));
+    }
+  });
 };

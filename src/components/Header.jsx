@@ -3,11 +3,13 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-import { createQuiz } from "../features/collection/quizzesSlice";
+import { createCompleteQuiz, createQuiz } from "../features/collection/quizzesSlice";
 import { questionConstantsText, questionIcons } from "../constants/question";
 import styled, { keyframes } from "styled-components";
 import { Cookies } from "react-cookie";
 import { RiStickyNoteAddFill } from "react-icons/ri";
+import Dragger from "antd/es/upload/Dragger";
+import { InboxOutlined } from "@ant-design/icons";
 
 const HeaderButton = ({ children, action }) => {
   return (
@@ -68,6 +70,7 @@ const cookies = new Cookies();
 const Header = () => {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [jsonQuestions, setJsonQuestions] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userCookie = cookies.get("user");
@@ -95,10 +98,29 @@ const Header = () => {
 
   const handleSubmitNewQuiz = async () => {
     const newQuizzProperties = form.getFieldsValue();
-    const { id: quizId } = await dispatch(createQuiz(newQuizzProperties));
+    const quizId = await dispatch(createCompleteQuiz({
+      newQuizzProperties,
+      questions: jsonQuestions
+    })).unwrap();
     setIsModalOpen(false);
     form.resetFields();
     navigate(`/quizzes/${quizId}/edit`);
+  };
+
+  const props = {
+    beforeUpload: (file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const content = JSON.parse(e.target.result);
+          setJsonQuestions(content);
+        } catch (err) {
+          console.error("Invalid JSON ");
+        }
+      };
+      reader.readAsText(file);
+      return false;
+    },
   };
 
   return (
@@ -118,6 +140,16 @@ const Header = () => {
               <Input />
             </Form.Item>
           </Form>
+          <>
+          <Dragger {...props}>
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">Click or drag a JSON file with questions</p>
+            <p className="ant-upload-hint">
+              
+            </p>
+          </Dragger></>
         </Modal>
       )}
       <StyledHeader>
